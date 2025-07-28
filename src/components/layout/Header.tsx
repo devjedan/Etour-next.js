@@ -67,25 +67,37 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:bg-primary hover:text-primary-foreground ${
-                    isActivePath(item.path) 
-                      ? "bg-primary text-primary-foreground" 
-                      : "text-foreground hover:text-primary-foreground"
-                  }`}
-                >
-                  {Icon && <Icon className="w-4 h-4" />}
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
+          <div className="hidden lg:flex items-center gap-6">
+            <nav className="flex items-center gap-6">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:bg-primary hover:text-primary-foreground ${
+                      isActivePath(item.path) 
+                        ? "bg-primary text-primary-foreground" 
+                        : "text-foreground hover:text-primary-foreground"
+                    }`}
+                  >
+                    {Icon && <Icon className="w-4 h-4" />}
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+            
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-2 ml-4">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button variant="booking" size="sm" asChild>
+                <Link to="/signup">Sign Up</Link>
+              </Button>
+            </div>
+          </div>
 
           {/* Mobile Menu Toggle */}
           <Button
@@ -120,6 +132,16 @@ const Header = () => {
                   </Link>
                 );
               })}
+              
+              {/* Mobile Auth Buttons */}
+              <div className="flex gap-2 mt-4 pt-4 border-t border-border">
+                <Button variant="outline" size="sm" className="flex-1" asChild>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                </Button>
+                <Button variant="booking" size="sm" className="flex-1" asChild>
+                  <Link to="/signup" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
+                </Button>
+              </div>
             </div>
           </nav>
         )}
