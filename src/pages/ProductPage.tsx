@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import QuickViewModal from "@/components/ui/QuickViewModal";
 import { 
   Calendar, 
   Clock, 
@@ -16,6 +18,8 @@ import heroBanner from "@/assets/hero-banner.jpg";
 
 const ProductPage = () => {
   const { sectorId, subSectorId } = useParams();
+  const [selectedTour, setSelectedTour] = useState(null);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   // Mock data for products
   const products = [
@@ -217,7 +221,15 @@ const ProductPage = () => {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => {
+                        setSelectedTour(product);
+                        setIsQuickViewOpen(true);
+                      }}
+                    >
                       Quick View
                     </Button>
                     <Button 
@@ -245,6 +257,12 @@ const ProductPage = () => {
           </div>
         </div>
       </section>
+
+      <QuickViewModal 
+        isOpen={isQuickViewOpen}
+        onClose={() => setIsQuickViewOpen(false)}
+        tour={selectedTour}
+      />
 
       <Footer />
     </div>
