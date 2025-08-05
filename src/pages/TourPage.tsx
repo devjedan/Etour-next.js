@@ -112,14 +112,8 @@ const TourPage = () => {
     { name: "Itinerary", icon: Route, tab: "itinerary" },
     { name: "Cost", icon: IndianRupee, tab: "cost" },
     { name: "Dates", icon: Calendar, tab: "dates" },
-    { name: "Journey", icon: MapPin, tab: "journey" },
-    { name: "Stay & Meals", icon: Utensils, tab: "stay" },
-    { name: "Map", icon: Map, tab: "map" },
-    { name: "Add-ons", icon: Plus, tab: "addons" },
-    { name: "Passport & Visa", icon: Shield, tab: "passport" },
-    { name: "Weather", icon: Cloud, tab: "weather" },
-    { name: "Do's & Don'ts", icon: AlertTriangle, tab: "guidelines" },
-    { name: "Videos", icon: Video, tab: "videos" },
+    { name: "Stay & Meals", icon: Utensils, tab: "stay", link: `/tour/${tourId}/stay-meals` },
+    { name: "Do's & Don'ts", icon: AlertTriangle, tab: "guidelines", link: `/tour/${tourId}/dos-and-donts` },
     { name: "Photos", icon: Camera, tab: "photos" },
     { name: "Terms", icon: FileText, tab: "terms" },
     { name: "Book Tour", icon: CreditCard, tab: "book", special: true }
@@ -212,6 +206,20 @@ const TourPage = () => {
                 <nav className="space-y-2">
                   {leftPanelLinks.map((link) => {
                     const Icon = link.icon;
+                    
+                    if (link.link) {
+                      return (
+                        <Link
+                          key={link.tab}
+                          to={link.link}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all duration-300 text-muted-foreground hover:bg-muted hover:text-foreground"
+                        >
+                          <Icon className="w-4 h-4" />
+                          {link.name}
+                        </Link>
+                      );
+                    }
+                    
                     return (
                       <button
                         key={link.tab}
@@ -332,8 +340,8 @@ const TourPage = () => {
                   </Card>
                 </TabsContent>
 
-                {/* Placeholder for other tabs */}
-                {["journey", "stay", "map", "addons", "passport", "weather", "guidelines", "videos", "photos", "terms"].map((tab) => (
+                {/* Remaining tabs */}
+                {["photos", "terms"].map((tab) => (
                   <TabsContent key={tab} value={tab}>
                     <Card className="p-6">
                       <h2 className="text-2xl font-bold mb-6 capitalize">{tab.replace(/([A-Z])/g, ' $1').trim()}</h2>

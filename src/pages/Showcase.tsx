@@ -126,7 +126,7 @@ const Showcase = () => {
                         <ArrowRight className="w-5 h-5" />
                       </Button>
                       <Button variant="outline" size="lg" className="bg-white/10 border-white text-white hover:bg-white hover:text-primary" asChild>
-                        <Link to="/contact">
+                        <Link to="/home" state={{ fromShowcase: true }}>
                           Learn More
                         </Link>
                       </Button>

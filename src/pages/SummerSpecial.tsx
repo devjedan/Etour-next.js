@@ -1,13 +1,30 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import QuickViewModal from "@/components/ui/QuickViewModal";
 import { Calendar, Clock, IndianRupee, Star, Thermometer, Umbrella } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
 
+interface TourPackage {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  duration: string;
+  price: string;
+  originalPrice: string;
+  rating: number;
+  reviews: number;
+  highlights: string[];
+  groupSize: string;
+}
+
 const SummerSpecial = () => {
+  const [selectedTour, setSelectedTour] = useState<TourPackage | null>(null);
   const summerPackages = [
     {
       id: "ladakh-summer",
@@ -21,7 +38,8 @@ const SummerSpecial = () => {
       reviews: 189,
       discount: "25% OFF",
       temperature: "10-20°C",
-      highlights: ["Leh Palace", "Pangong Lake", "Nubra Valley", "Monasteries"]
+      highlights: ["Leh Palace", "Pangong Lake", "Nubra Valley", "Monasteries"],
+      groupSize: "4-12 people"
     },
     {
       id: "manali-summer",
@@ -35,7 +53,8 @@ const SummerSpecial = () => {
       reviews: 245,
       discount: "24% OFF",
       temperature: "15-25°C",
-      highlights: ["Rohtang Pass", "Solang Valley", "Hadimba Temple", "Old Manali"]
+      highlights: ["Rohtang Pass", "Solang Valley", "Hadimba Temple", "Old Manali"],
+      groupSize: "2-10 people"
     },
     {
       id: "shimla-summer",
@@ -49,7 +68,8 @@ const SummerSpecial = () => {
       reviews: 156,
       discount: "24% OFF",
       temperature: "20-28°C",
-      highlights: ["Mall Road", "Jakhu Temple", "Christ Church", "Toy Train"]
+      highlights: ["Mall Road", "Jakhu Temple", "Christ Church", "Toy Train"],
+      groupSize: "2-12 people"
     },
     {
       id: "darjeeling-summer",
@@ -63,7 +83,8 @@ const SummerSpecial = () => {
       reviews: 134,
       discount: "24% OFF",
       temperature: "18-26°C",
-      highlights: ["Tiger Hill", "Tea Gardens", "Toy Train", "Batasia Loop"]
+      highlights: ["Tiger Hill", "Tea Gardens", "Toy Train", "Batasia Loop"],
+      groupSize: "2-8 people"
     },
     {
       id: "ooty-summer",
@@ -77,7 +98,8 @@ const SummerSpecial = () => {
       reviews: 189,
       discount: "24% OFF",
       temperature: "15-25°C",
-      highlights: ["Botanical Garden", "Lake", "Toy Train", "Rose Garden"]
+      highlights: ["Botanical Garden", "Lake", "Toy Train", "Rose Garden"],
+      groupSize: "2-6 people"
     },
     {
       id: "kashmir-summer",
@@ -91,7 +113,8 @@ const SummerSpecial = () => {
       reviews: 167,
       discount: "25% OFF",
       temperature: "12-22°C",
-      highlights: ["Dal Lake", "Gulmarg", "Pahalgam", "Shikara Ride"]
+      highlights: ["Dal Lake", "Gulmarg", "Pahalgam", "Shikara Ride"],
+      groupSize: "2-10 people"
     }
   ];
 
@@ -206,7 +229,12 @@ const SummerSpecial = () => {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => setSelectedTour(pkg)}
+                    >
                       Quick View
                     </Button>
                     <Button 
@@ -215,7 +243,7 @@ const SummerSpecial = () => {
                       className="flex-1"
                       asChild
                     >
-                      <Link to={`/tour/${pkg.id}`}>
+                      <Link to={`/book/${pkg.id}`}>
                         Book Now
                       </Link>
                     </Button>
@@ -263,6 +291,13 @@ const SummerSpecial = () => {
           </div>
         </div>
       </section>
+
+      {/* Quick View Modal */}
+      <QuickViewModal 
+        isOpen={!!selectedTour} 
+        onClose={() => setSelectedTour(null)} 
+        tour={selectedTour} 
+      />
 
       <Footer />
     </div>

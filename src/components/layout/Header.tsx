@@ -159,12 +159,29 @@ const Header = () => {
               
               {/* Mobile Auth Buttons */}
               <div className="flex gap-2 mt-4 pt-4 border-t border-border">
-                <Button variant="outline" size="sm" className="flex-1" asChild>
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
-                </Button>
-                <Button variant="booking" size="sm" className="flex-1" asChild>
-                  <Link to="/signup" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
-                </Button>
+                {isAuthenticated ? (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1 flex items-center gap-2" 
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </Button>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" className="flex-1" asChild>
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                    </Button>
+                    <Button variant="booking" size="sm" className="flex-1" asChild>
+                      <Link to="/signup" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </nav>
