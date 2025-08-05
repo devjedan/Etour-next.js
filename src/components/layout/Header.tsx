@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   Globe, 
   Phone, 
@@ -9,12 +11,15 @@ import {
   X,
   Search,
   MapPin,
-  Home
+  Home,
+  User,
+  LogOut
 } from "lucide-react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, logout, isAuthenticated } = useAuth();
 
   const menuItems = [
     { name: "Home", path: "/home", icon: Home },
@@ -88,14 +93,33 @@ const Header = () => {
               })}
             </nav>
             
-            {/* Auth Buttons */}
+            {/* Auth Section */}
             <div className="flex items-center gap-2 ml-4">
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/login">Login</Link>
-              </Button>
-              <Button variant="booking" size="sm" asChild>
-                <Link to="/signup">Sign Up</Link>
-              </Button>
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      {user?.name}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={logout}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/login">Login</Link>
+                  </Button>
+                  <Button variant="booking" size="sm" asChild>
+                    <Link to="/signup">Sign Up</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/layout/Header";
@@ -19,6 +19,7 @@ import heroBanner from "@/assets/hero-banner.jpg";
 import tourCategories from "@/assets/tour-categories.jpg";
 
 const Home = () => {
+  const location = useLocation();
   const tourSectors = [
     {
       name: "Domestic Tours",
@@ -107,55 +108,61 @@ const Home = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Hero Section */}
-      <section className="relative h-[70vh] overflow-hidden">
-        <img
-          src={heroBanner}
-          alt="Travel destinations"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 overlay-gradient"></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white max-w-4xl px-4">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-              Discover Your Next
-              <span className="text-secondary block">Adventure</span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-white/90">
-              From the majestic Himalayas to exotic international destinations
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="xl" asChild>
-                <Link to="/search">
-                  <Calendar className="w-5 h-5" />
-                  Plan Your Trip
-                </Link>
-              </Button>
-              <Button variant="outline" size="xl" className="bg-white/10 border-white text-white hover:bg-white hover:text-primary">
-                View All Tours
-                <ArrowRight className="w-5 h-5" />
-              </Button>
+      {/* Hero Section - Only show if not coming from showcase */}
+      {!location.search.includes('from=showcase') && (
+        <section className="relative h-[70vh] overflow-hidden">
+          <img
+            src={heroBanner}
+            alt="Travel destinations"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 overlay-gradient"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center text-white max-w-4xl px-4">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+                Discover Your Next
+                <span className="text-secondary block">Adventure</span>
+              </h1>
+              <p className="text-xl md:text-2xl mb-8 text-white/90">
+                From the majestic Himalayas to exotic international destinations
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button variant="hero" size="xl" asChild>
+                  <Link to="/search">
+                    <Calendar className="w-5 h-5" />
+                    Plan Your Trip
+                  </Link>
+                </Button>
+                <Button variant="outline" size="xl" className="bg-white/10 border-white text-white hover:bg-white hover:text-primary">
+                  View All Tours
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Advertisement Panels */}
       <section className="py-4 bg-muted">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center gap-4">
-            <Card className="flex-1 p-4 hover-lift cursor-pointer">
-              <div className="text-center">
-                <h3 className="font-semibold text-primary">Summer Special</h3>
-                <p className="text-sm text-muted-foreground">Hill Station packages from ₹8,999</p>
-              </div>
-            </Card>
-            <Card className="flex-1 p-4 hover-lift cursor-pointer">
-              <div className="text-center">
-                <h3 className="font-semibold text-secondary">Weekend Getaways</h3>
-                <p className="text-sm text-muted-foreground">Quick escapes starting ₹3,999</p>
-              </div>
-            </Card>
+            <Link to="/summer-special" className="flex-1">
+              <Card className="p-4 hover-lift cursor-pointer">
+                <div className="text-center">
+                  <h3 className="font-semibold text-primary">Summer Special</h3>
+                  <p className="text-sm text-muted-foreground">Hill Station packages from ₹8,999</p>
+                </div>
+              </Card>
+            </Link>
+            <Link to="/weekend-getaways" className="flex-1">
+              <Card className="p-4 hover-lift cursor-pointer">
+                <div className="text-center">
+                  <h3 className="font-semibold text-secondary">Weekend Getaways</h3>
+                  <p className="text-sm text-muted-foreground">Quick escapes starting ₹3,999</p>
+                </div>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>
@@ -243,8 +250,10 @@ const Home = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="text-2xl font-bold text-primary">{offer.price}</div>
-                    <Button variant="booking" size="sm">
-                      Book Now
+                    <Button variant="booking" size="sm" asChild>
+                      <Link to={`/tour/golden-triangle-${index + 1}`}>
+                        Book Now
+                      </Link>
                     </Button>
                   </div>
                 </div>

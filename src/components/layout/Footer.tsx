@@ -154,7 +154,7 @@ const Footer = () => {
                 Site Map
               </Link>
               <span className="text-primary-light/60">|</span>
-              <Link to="/career" className="hover:text-secondary transition-colors">
+              <Link to="/careers" className="hover:text-secondary transition-colors">
                 Career
               </Link>
               <span className="text-primary-light/60">|</span>

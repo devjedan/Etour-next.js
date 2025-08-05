@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play, SkipForward, ArrowRight, Download } from "lucide-react";
@@ -68,7 +68,7 @@ const Showcase = () => {
   };
 
   const handleContinue = () => {
-    navigate("/home");
+    navigate("/home?from=showcase");
   };
 
   return (
@@ -125,8 +125,10 @@ const Showcase = () => {
                         Explore Now
                         <ArrowRight className="w-5 h-5" />
                       </Button>
-                      <Button variant="outline" size="lg" className="bg-white/10 border-white text-white hover:bg-white hover:text-primary">
-                        Learn More
+                      <Button variant="outline" size="lg" className="bg-white/10 border-white text-white hover:bg-white hover:text-primary" asChild>
+                        <Link to="/contact">
+                          Learn More
+                        </Link>
                       </Button>
                     </div>
                   </div>
