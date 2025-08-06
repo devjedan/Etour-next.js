@@ -50,23 +50,30 @@ const BookTourPage = () => {
   
   const [passengers, setPassengers] = useState<Passenger[]>([]);
   const [selectedDate, setSelectedDate] = useState("");
+  const [roomSharing, setRoomSharing] = useState("twin"); // twin, single, triple
   const [orderNumber, setOrderNumber] = useState("");
 
-  // Mock tour data
+  // Mock tour data - Replace with API call: getTourById(tourId)
   const tour = {
     id: "golden-triangle-deluxe",
     name: "Golden Triangle Deluxe",
     code: "GT001",
     duration: "6 Days / 5 Nights",
     basePrice: 15999,
+    roomPrices: {
+      single: 15999, // Single occupancy base price
+      twin: 12999,   // Twin sharing per person
+      triple: 11999  // Triple sharing per person
+    },
     image: "/api/placeholder/400/300"
   };
 
+  // Available dates - Replace with API call: getAvailableDates(tourId)
   const availableDates = [
-    { date: "15 Jan 2024", price: 15999 },
-    { date: "22 Jan 2024", price: 16999 },
-    { date: "29 Jan 2024", price: 15999 },
-    { date: "05 Feb 2024", price: 17999 }
+    { date: "15 Jan 2024", multiplier: 1.0 },   // Regular pricing
+    { date: "22 Jan 2024", multiplier: 1.1 },   // 10% markup
+    { date: "29 Jan 2024", multiplier: 1.0 },   // Regular pricing  
+    { date: "05 Feb 2024", multiplier: 1.2 }    // 20% markup for peak season
   ];
 
   const addPassenger = () => {
@@ -91,22 +98,40 @@ const BookTourPage = () => {
     ));
   };
 
+  // Dynamic pricing calculation based on room sharing and age
   const calculatePrice = (age: number) => {
+    const baseRoomPrice = tour.roomPrices[roomSharing as keyof typeof tour.roomPrices];
+    const dateMultiplier = availableDates.find(d => d.date === selectedDate)?.multiplier || 1.0;
+    
     if (age <= 5) return 0; // Free for children under 5
-    if (age <= 12) return tour.basePrice * 0.6; // 40% discount for children
-    return tour.basePrice;
+    if (age <= 12) return baseRoomPrice * 0.6 * dateMultiplier; // 40% discount for children
+    return baseRoomPrice * dateMultiplier;
   };
 
   const getTotalPrice = () => {
-    const selectedDatePrice = availableDates.find(d => d.date === selectedDate)?.price || tour.basePrice;
+    // Primary passenger price
+    const primaryPrice = calculatePrice(25); // Assuming adult age for primary
+    
+    // Additional passengers total
     const passengersTotal = passengers.reduce((total, passenger) => {
       return total + calculatePrice(passenger.age);
     }, 0);
-    return selectedDatePrice + passengersTotal;
+    
+    return primaryPrice + passengersTotal;
   };
 
+  // Payment handler - Replace with actual payment gateway integration
   const handlePayment = () => {
-    // Generate order number
+    // TODO: Integrate with payment gateway (Razorpay, Stripe, etc.)
+    // const paymentData = {
+    //   tourId,
+    //   passengers: [primaryPassenger, ...passengers],
+    //   totalAmount: getTotalPrice(),
+    //   roomSharing,
+    //   selectedDate
+    // };
+    // await processPayment(paymentData);
+    
     const orderNum = `ET${Date.now().toString().slice(-8)}`;
     setOrderNumber(orderNum);
     setStep(4);
@@ -144,6 +169,7 @@ const BookTourPage = () => {
                 <p><strong>Order Number:</strong> {orderNumber}</p>
                 <p><strong>Tour:</strong> {tour.name}</p>
                 <p><strong>Date:</strong> {selectedDate}</p>
+                <p><strong>Room Type:</strong> {roomSharing === 'single' ? 'Single Occupancy' : roomSharing === 'twin' ? 'Twin Sharing' : 'Triple Sharing'}</p>
                 <p><strong>Passengers:</strong> {passengers.length + 1}</p>
                 <p><strong>Total Amount:</strong> ₹{getTotalPrice().toLocaleString()}</p>
               </div>
@@ -227,9 +253,30 @@ const BookTourPage = () => {
                         <SelectContent>
                           {availableDates.map((date) => (
                             <SelectItem key={date.date} value={date.date}>
-                              {date.date} - ₹{date.price.toLocaleString()}
+                              {date.date} {date.multiplier > 1 && `(+${Math.round((date.multiplier - 1) * 100)}%)`}
                             </SelectItem>
                           ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Room Sharing Options */}
+                    <div>
+                      <Label htmlFor="roomSharing">Room Sharing *</Label>
+                      <Select value={roomSharing} onValueChange={setRoomSharing}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select room type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="single">
+                            Single Occupancy - ₹{tour.roomPrices.single.toLocaleString()}/person
+                          </SelectItem>
+                          <SelectItem value="twin">
+                            Twin Sharing - ₹{tour.roomPrices.twin.toLocaleString()}/person
+                          </SelectItem>
+                          <SelectItem value="triple">
+                            Triple Sharing - ₹{tour.roomPrices.triple.toLocaleString()}/person
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -405,9 +452,13 @@ const BookTourPage = () => {
                     <div>
                       <h3 className="font-semibold mb-2">Price Breakdown:</h3>
                       <div className="space-y-2 text-sm">
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Room Type:</span>
+                          <span>{roomSharing === 'single' ? 'Single Occupancy' : roomSharing === 'twin' ? 'Twin Sharing' : 'Triple Sharing'}</span>
+                        </div>
                         <div className="flex justify-between">
                           <span>Primary Passenger:</span>
-                          <span>₹{(availableDates.find(d => d.date === selectedDate)?.price || tour.basePrice).toLocaleString()}</span>
+                          <span>₹{calculatePrice(25).toLocaleString()}</span>
                         </div>
                         {passengers.map((passenger, index) => (
                           <div key={passenger.id} className="flex justify-between">
@@ -458,7 +509,7 @@ const BookTourPage = () => {
                 <Button 
                   onClick={() => setStep(step + 1)} 
                   className="ml-auto"
-                  disabled={step === 1 && (!selectedDate || !primaryPassenger.name || !primaryPassenger.email)}
+                  disabled={step === 1 && (!selectedDate || !roomSharing || !primaryPassenger.name || !primaryPassenger.email)}
                 >
                   Next Step
                 </Button>

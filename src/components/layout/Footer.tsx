@@ -89,11 +89,6 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/sector/heritage" className="hover:text-secondary transition-colors">
-                  Heritage Tours
-                </Link>
-              </li>
-              <li>
                 <Link to="/sector/sports" className="hover:text-secondary transition-colors">
                   Sports Tourism
                 </Link>

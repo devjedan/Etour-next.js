@@ -42,7 +42,7 @@ const TourPage = () => {
     originalPrice: "₹19,999",
     rating: 4.8,
     reviews: 245,
-    category: "Heritage & Culture",
+    category: "Cultural",
     difficulty: "Easy",
     groupSize: "2-15 people",
     includes: ["Accommodation", "Transportation", "Guide", "Breakfast"],

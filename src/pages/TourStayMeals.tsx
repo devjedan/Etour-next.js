@@ -124,60 +124,54 @@ const TourStayMeals = () => {
         </div>
       </section>
 
-      {/* Accommodations */}
+      {/* Accommodation Information - General stay guidelines */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-8">Accommodation Details</h2>
-          <div className="space-y-8">
-            {accommodations.map((hotel, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="md:flex">
-                  <div className="md:w-1/3">
-                    <img
-                      src={hotel.image}
-                      alt={hotel.name}
-                      className="w-full h-48 md:h-full object-cover"
-                    />
-                  </div>
-                  <div className="md:w-2/3 p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-semibold mb-1">{hotel.name}</h3>
-                        <p className="text-primary font-medium">{hotel.category}</p>
-                        <p className="text-sm text-muted-foreground">{hotel.location}</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {[...Array(4)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Room Type</p>
-                        <p className="font-medium">{hotel.roomType}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Stay Duration</p>
-                        <p className="font-medium">{hotel.checkIn} to {hotel.checkOut}</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-2">Amenities</p>
-                      <div className="flex flex-wrap gap-2">
-                        {hotel.amenities.map((amenity, i) => (
-                          <span key={i} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                            {amenity}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+          <h2 className="text-2xl font-bold text-center mb-8">Stay Information</h2>
+          
+          {/* General Accommodation Guidelines */}
+          <div className="max-w-4xl mx-auto space-y-6">
+            <Card className="p-6">
+              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Bed className="w-5 h-5 text-primary" />
+                Accommodation Standards
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-2">Room Features</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Air-conditioned rooms with comfortable bedding</li>
+                    <li>• Private bathroom with hot/cold water</li>
+                    <li>• Daily housekeeping service</li>
+                    <li>• 24/7 room service availability</li>
+                    <li>• Safe and secure environment</li>
+                  </ul>
                 </div>
-              </Card>
-            ))}
+                <div>
+                  <h4 className="font-medium mb-2">Hotel Amenities</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Complimentary WiFi access</li>
+                    <li>• Front desk assistance</li>
+                    <li>• Laundry services</li>
+                    <li>• Travel assistance desk</li>
+                    <li>• Emergency medical support</li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Car className="w-5 h-5 text-primary" />
+                Transportation & Location
+              </h3>
+              <div className="text-sm text-muted-foreground space-y-2">
+                <p>• Hotels are strategically located near major attractions</p>
+                <p>• Convenient access to local transportation</p>
+                <p>• Safe and well-connected areas</p>
+                <p>• Airport/railway station pickup and drop available</p>
+              </div>
+            </Card>
           </div>
         </div>
       </section>

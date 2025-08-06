@@ -59,6 +59,8 @@ const PassengerForm = ({
   onRemove, 
   tourPrice 
 }: PassengerFormProps) => {
+  // Component for collecting passenger information for tour bookings
+  // Supports different pricing based on age groups and room sharing options
   const [expandedSections, setExpandedSections] = useState({
     personal: true,
     contact: false,

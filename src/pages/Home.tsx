@@ -97,15 +97,6 @@ const Home = () => {
       link: "/sector/adventure",
       image: heroBanner,
       features: ["Mountaineering", "Rafting", "Safari", "Extreme Sports"]
-    },
-    {
-      name: "Heritage Tours", 
-      description: "Explore cultural treasures",
-      icon: Camera,
-      color: "tour-heritage",
-      link: "/sector/heritage",
-      image: heroBanner,
-      features: ["Monuments", "Culture", "History", "Museums"]
     }
   ];
 

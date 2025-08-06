@@ -93,19 +93,30 @@ const Header = () => {
               })}
             </nav>
             
-            {/* Auth Section */}
+            {/* Auth Section - User authentication UI */}
             <div className="flex items-center gap-2 ml-4">
               {isAuthenticated ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      {user?.name}
+                    <Button variant="ghost" size="sm" className="p-2 rounded-full hover:bg-muted">
+                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-primary-foreground" />
+                      </div>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={logout}>
-                      <LogOut className="w-4 h-4 mr-2" />
+                  <DropdownMenuContent align="end" className="w-48 bg-background border shadow-lg">
+                    <DropdownMenuItem className="flex items-center gap-2 p-3 cursor-pointer hover:bg-muted">
+                      <User className="w-4 h-4" />
+                      <div className="flex flex-col">
+                        <span className="font-medium">{user?.name}</span>
+                        <span className="text-xs text-muted-foreground">{user?.email}</span>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={logout}
+                      className="flex items-center gap-2 p-3 cursor-pointer hover:bg-muted text-red-600 hover:text-red-700"
+                    >
+                      <LogOut className="w-4 h-4" />
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -157,21 +168,32 @@ const Header = () => {
                 );
               })}
               
-              {/* Mobile Auth Buttons */}
+              {/* Mobile Auth Buttons - Responsive user authentication */}
               <div className="flex gap-2 mt-4 pt-4 border-t border-border">
                 {isAuthenticated ? (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1 flex items-center gap-2" 
-                    onClick={() => {
-                      logout();
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Logout
-                  </Button>
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-primary-foreground" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{user?.name}</span>
+                        <span className="text-xs text-muted-foreground">{user?.email}</span>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full flex items-center gap-2 text-red-600 hover:text-red-700" 
+                      onClick={() => {
+                        logout();
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </Button>
+                  </div>
                 ) : (
                   <>
                     <Button variant="outline" size="sm" className="flex-1" asChild>
