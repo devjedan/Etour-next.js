@@ -101,11 +101,13 @@ const TourPage = () => {
     },
   ];
 
+  // Dynamic cost details from backend - Replace with API call: getCostDetails(tourId)
   const costDetails = [
     { category: "Twin Sharing", price: "₹15,999", discount: "20%" },
     { category: "Single Occupancy", price: "₹22,999", discount: "15%" },
     { category: "Triple Sharing", price: "₹13,999", discount: "25%" },
-    { category: "Child (5-12 years)", price: "₹9,999", discount: "30%" },
+    { category: "Child with Bed", price: "₹9,999", discount: "37%" },
+    { category: "Child without Bed", price: "₹4,999", discount: "69%" },
   ];
 
   const departureDates = [

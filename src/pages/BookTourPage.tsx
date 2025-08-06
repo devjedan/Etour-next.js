@@ -31,6 +31,7 @@ interface Passenger {
   gender: string;
   email: string;
   phone: string;
+  roomSharing: string; // single, twin, triple, childWithBed, childWithoutBed
 }
 
 const BookTourPage = () => {
@@ -40,12 +41,14 @@ const BookTourPage = () => {
   const [step, setStep] = useState(1); // 1: Details, 2: Passengers, 3: Payment, 4: Confirmation
   const [primaryPassenger, setPrimaryPassenger] = useState({
     name: "",
+    age: 25, // Default adult age
     email: "",
     phone: "",
     address: "",
     city: "",
     state: "",
-    pincode: ""
+    pincode: "",
+    roomSharing: "twin" // Default room sharing
   });
   
   const [passengers, setPassengers] = useState<Passenger[]>([]);
@@ -59,13 +62,15 @@ const BookTourPage = () => {
     name: "Golden Triangle Deluxe",
     code: "GT001",
     duration: "6 Days / 5 Nights",
-    basePrice: 15999,
-    roomPrices: {
-      single: 15999, // Single occupancy base price
-      twin: 12999,   // Twin sharing per person
-      triple: 11999  // Triple sharing per person
-    },
     image: "/api/placeholder/400/300"
+  };
+
+  // Dynamic cost details from backend - Replace with API call: getCostDetails(tourId)
+  const costDetails = {
+    singlePersonCost: 22999,
+    extraPersonCost: 15999, // Twin sharing price
+    childWithBed: 9999,
+    childWithoutBed: 4999
   };
 
   // Available dates - Replace with API call: getAvailableDates(tourId)
@@ -83,7 +88,8 @@ const BookTourPage = () => {
       age: 0,
       gender: "",
       email: "",
-      phone: ""
+      phone: "",
+      roomSharing: "twin" // Default room sharing
     };
     setPassengers([...passengers, newPassenger]);
   };
@@ -98,23 +104,40 @@ const BookTourPage = () => {
     ));
   };
 
-  // Dynamic pricing calculation based on room sharing and age
-  const calculatePrice = (age: number) => {
-    const baseRoomPrice = tour.roomPrices[roomSharing as keyof typeof tour.roomPrices];
+  // Dynamic pricing calculation based on age and room type
+  const calculatePrice = (age: number, roomType: string = "twin") => {
     const dateMultiplier = availableDates.find(d => d.date === selectedDate)?.multiplier || 1.0;
     
     if (age <= 5) return 0; // Free for children under 5
-    if (age <= 12) return baseRoomPrice * 0.6 * dateMultiplier; // 40% discount for children
-    return baseRoomPrice * dateMultiplier;
+    
+    let basePrice = 0;
+    if (age <= 12) {
+      // Child pricing
+      basePrice = roomType === 'childWithoutBed' ? costDetails.childWithoutBed : costDetails.childWithBed;
+    } else {
+      // Adult pricing  
+      switch (roomType) {
+        case 'single':
+          basePrice = costDetails.singlePersonCost;
+          break;
+        case 'triple':
+          basePrice = costDetails.extraPersonCost * 0.9; // 10% discount for triple
+          break;
+        default:
+          basePrice = costDetails.extraPersonCost; // Twin sharing
+      }
+    }
+    
+    return basePrice * dateMultiplier;
   };
 
   const getTotalPrice = () => {
     // Primary passenger price
-    const primaryPrice = calculatePrice(25); // Assuming adult age for primary
+    const primaryPrice = calculatePrice(primaryPassenger.age, primaryPassenger.roomSharing);
     
     // Additional passengers total
     const passengersTotal = passengers.reduce((total, passenger) => {
-      return total + calculatePrice(passenger.age);
+      return total + calculatePrice(passenger.age, passenger.roomSharing);
     }, 0);
     
     return primaryPrice + passengersTotal;
@@ -260,25 +283,28 @@ const BookTourPage = () => {
                       </Select>
                     </div>
 
-                    {/* Room Sharing Options */}
+                    {/* Global Room Sharing Options - For info only */}
                     <div>
-                      <Label htmlFor="roomSharing">Room Sharing *</Label>
+                      <Label htmlFor="roomSharing">Default Room Sharing Info</Label>
                       <Select value={roomSharing} onValueChange={setRoomSharing}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select room type" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="single">
-                            Single Occupancy - ₹{tour.roomPrices.single.toLocaleString()}/person
+                            Single Occupancy - ₹{costDetails.singlePersonCost.toLocaleString()}/person
                           </SelectItem>
                           <SelectItem value="twin">
-                            Twin Sharing - ₹{tour.roomPrices.twin.toLocaleString()}/person
+                            Twin Sharing - ₹{costDetails.extraPersonCost.toLocaleString()}/person
                           </SelectItem>
                           <SelectItem value="triple">
-                            Triple Sharing - ₹{tour.roomPrices.triple.toLocaleString()}/person
+                            Triple Sharing - ₹{(costDetails.extraPersonCost * 0.9).toLocaleString()}/person
                           </SelectItem>
                         </SelectContent>
                       </Select>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Individual room selection available for each passenger
+                      </p>
                     </div>
                   </div>
                 </Card>
@@ -295,6 +321,57 @@ const BookTourPage = () => {
                         placeholder="Enter full name"
                       />
                     </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="age">Age *</Label>
+                        <Input
+                          id="age"
+                          type="number"
+                          value={primaryPassenger.age || ""}
+                          onChange={(e) => setPrimaryPassenger({...primaryPassenger, age: parseInt(e.target.value) || 0})}
+                          placeholder="Enter age"
+                          min="0"
+                          max="120"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="primaryRoomSharing">Room Type *</Label>
+                        <Select 
+                          value={primaryPassenger.roomSharing} 
+                          onValueChange={(value) => setPrimaryPassenger({...primaryPassenger, roomSharing: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select room type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {primaryPassenger.age <= 12 ? (
+                              <>
+                                <SelectItem value="childWithBed">
+                                  Child with Bed - ₹{costDetails.childWithBed.toLocaleString()}
+                                </SelectItem>
+                                <SelectItem value="childWithoutBed">
+                                  Child without Bed - ₹{costDetails.childWithoutBed.toLocaleString()}
+                                </SelectItem>
+                              </>
+                            ) : (
+                              <>
+                                <SelectItem value="single">
+                                  Single Occupancy - ₹{costDetails.singlePersonCost.toLocaleString()}
+                                </SelectItem>
+                                <SelectItem value="twin">
+                                  Twin Sharing - ₹{costDetails.extraPersonCost.toLocaleString()}
+                                </SelectItem>
+                                <SelectItem value="triple">
+                                  Triple Sharing - ₹{(costDetails.extraPersonCost * 0.9).toLocaleString()}
+                                </SelectItem>
+                              </>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
                     <div>
                       <Label htmlFor="email">Email *</Label>
                       <Input
@@ -342,6 +419,14 @@ const BookTourPage = () => {
                           placeholder="Pincode"
                         />
                       </div>
+                    </div>
+
+                    {/* Primary Passenger Price Display */}
+                    <div className="p-3 bg-secondary/50 rounded-lg">
+                      <p className="text-sm text-muted-foreground">
+                        <strong>Your Price:</strong> ₹{calculatePrice(primaryPassenger.age, primaryPassenger.roomSharing).toLocaleString()}
+                        {primaryPassenger.age <= 5 && " (Free for children under 5)"}
+                      </p>
                     </div>
                   </div>
                 </Card>
@@ -417,10 +502,50 @@ const BookTourPage = () => {
                           </div>
                         </div>
 
+                        {/* Room Sharing for Additional Passengers */}
+                        <div className="mt-4">
+                          <Label>Room Type *</Label>
+                          <Select 
+                            value={passenger.roomSharing || ""} 
+                            onValueChange={(value) => updatePassenger(passenger.id, "roomSharing", value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder={
+                                passenger.age <= 12 
+                                  ? "Select child accommodation" 
+                                  : "Select room sharing type"
+                              } />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {passenger.age <= 12 ? (
+                                <>
+                                  <SelectItem value="childWithBed">
+                                    Child with Bed - ₹{costDetails.childWithBed.toLocaleString()}
+                                  </SelectItem>
+                                  <SelectItem value="childWithoutBed">
+                                    Child without Bed - ₹{costDetails.childWithoutBed.toLocaleString()}
+                                  </SelectItem>
+                                </>
+                              ) : (
+                                <>
+                                  <SelectItem value="single">
+                                    Single Occupancy - ₹{costDetails.singlePersonCost.toLocaleString()}
+                                  </SelectItem>
+                                  <SelectItem value="twin">
+                                    Twin Sharing - ₹{costDetails.extraPersonCost.toLocaleString()}
+                                  </SelectItem>
+                                  <SelectItem value="triple">
+                                    Triple Sharing - ₹{(costDetails.extraPersonCost * 0.9).toLocaleString()}
+                                  </SelectItem>
+                                </>
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
                         <div className="mt-4 text-sm text-muted-foreground">
-                          Price: ₹{calculatePrice(passenger.age).toLocaleString()} 
+                          Price: ₹{calculatePrice(passenger.age, passenger.roomSharing).toLocaleString()} 
                           {passenger.age <= 5 && " (Free for children under 5)"}
-                          {passenger.age > 5 && passenger.age <= 12 && " (40% discount for children)"}
                         </div>
                       </div>
                     ))}
@@ -458,12 +583,12 @@ const BookTourPage = () => {
                         </div>
                         <div className="flex justify-between">
                           <span>Primary Passenger:</span>
-                          <span>₹{calculatePrice(25).toLocaleString()}</span>
+                          <span>₹{calculatePrice(primaryPassenger.age, primaryPassenger.roomSharing).toLocaleString()}</span>
                         </div>
                         {passengers.map((passenger, index) => (
                           <div key={passenger.id} className="flex justify-between">
                             <span>{passenger.name || `Passenger ${index + 2}`}:</span>
-                            <span>₹{calculatePrice(passenger.age).toLocaleString()}</span>
+                            <span>₹{calculatePrice(passenger.age, passenger.roomSharing).toLocaleString()}</span>
                           </div>
                         ))}
                       </div>
