@@ -1,10 +1,10 @@
 package com.example.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+//import jakarta.validation.constraints.NotBlank;
 
-import java.util.List;
+//import java.util.List;
 
 @Entity
 @Table(name = "categorymaster")
@@ -21,10 +21,27 @@ public class CategoryMaster {
     @Column(name = "sub_ctg_name", length = 20)
     private String subCtgName;
 
-    @Column(name = "ctg_name", length = 30)
+    @Column(name = "ctg_name", length = 50)
     private String ctgName;
+    
+    @Column(name = "ctg_desc", length = 50)
+    private String ctgDesc;
+    
+    @Column(name = "ctg_features", length = 100)
+    private String ctgFeatures;
+    
 
-    @Column(name = "ctg_img_path", length = 50)
+    public String getCtgDesc() {
+		return ctgDesc;
+	}
+
+	public void setCtgDesc(String ctgDesc) {
+		this.ctgDesc = ctgDesc;
+	}
+
+
+
+	@Column(name = "ctg_img_path", length = 50)
     private String ctgImgPath;
 
     @Column(name = "flag")
@@ -78,8 +95,6 @@ public class CategoryMaster {
 
     public void setFlag(Boolean flag) {
         this.flag = flag;
-    }
-   
-    
+    }  
     
 }

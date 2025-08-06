@@ -22,24 +22,27 @@ const Showcase = () => {
     {
       title: "New Year Special Offers",
       subtitle: "Save up to 40% on International Packages",
-      description: "Limited time offer on all European and Asian tour packages. Book now and save big!",
+      description:
+        "Limited time offer on all European and Asian tour packages. Book now and save big!",
       image: heroBanner,
-      type: "promotion"
+      type: "promotion",
     },
     {
       title: "TourIndia Campaign 2024",
       subtitle: "Discover Incredible India",
-      description: "Experience the diversity and beauty of India with our specially curated domestic tour packages.",
+      description:
+        "Experience the diversity and beauty of India with our specially curated domestic tour packages.",
       image: heroBanner,
-      type: "campaign"
+      type: "campaign",
     },
     {
       title: "Adventure Awaits",
       subtitle: "Himalayan Expedition Special",
-      description: "Join our exclusive mountain expeditions and trekking adventures in the mighty Himalayas.",
+      description:
+        "Join our exclusive mountain expeditions and trekking adventures in the mighty Himalayas.",
       image: heroBanner,
-      type: "adventure"
-    }
+      type: "adventure",
+    },
   ];
 
   const mediaContent = [
@@ -47,20 +50,23 @@ const Showcase = () => {
       title: "TourIndia Official Video",
       type: "video",
       duration: "2:30",
-      description: "Watch our latest promotional video showcasing the beauty of Indian destinations."
+      description:
+        "Watch our latest promotional video showcasing the beauty of Indian destinations.",
     },
     {
       title: "Travel Brochure 2024",
       type: "pdf",
       size: "2.5 MB",
-      description: "Download our comprehensive travel brochure with all tour packages and offers."
+      description:
+        "Download our comprehensive travel brochure with all tour packages and offers.",
     },
     {
       title: "Destination Guide",
-      type: "pdf", 
+      type: "pdf",
       size: "1.8 MB",
-      description: "Complete guide to top travel destinations in India and abroad."
-    }
+      description:
+        "Complete guide to top travel destinations in India and abroad.",
+    },
   ];
 
   const handleSkipToHome = () => {
@@ -83,7 +89,9 @@ const Showcase = () => {
             </div>
             <div className="text-white">
               <h1 className="text-3xl font-bold">Etour Travels</h1>
-              <p className="text-white/90">Your Gateway to Incredible Journeys</p>
+              <p className="text-white/90">
+                Your Gateway to Incredible Journeys
+              </p>
             </div>
           </div>
           <Button
@@ -125,7 +133,12 @@ const Showcase = () => {
                         Explore Now
                         <ArrowRight className="w-5 h-5" />
                       </Button>
-                      <Button variant="outline" size="lg" className="bg-white/10 border-white text-white hover:bg-white hover:text-primary" asChild>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="bg-white/10 border-white text-white hover:bg-white hover:text-primary"
+                        asChild
+                      >
                         <Link to="/home" state={{ fromShowcase: true }}>
                           Learn More
                         </Link>
@@ -135,7 +148,7 @@ const Showcase = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Slide Indicators */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
               <div className="flex gap-2">
@@ -144,8 +157,8 @@ const Showcase = () => {
                     key={index}
                     onClick={() => setCurrentSlide(index)}
                     className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentSlide 
-                        ? "bg-white" 
+                      index === currentSlide
+                        ? "bg-white"
                         : "bg-white/50 hover:bg-white/75"
                     }`}
                   />
@@ -155,7 +168,7 @@ const Showcase = () => {
           </Card>
         </div>
 
-        {/* TourIndia Media Section */}
+        {/* TourIndia Media Section
         <div className="mb-12">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-primary mb-4">TourIndia Media Center</h2>
@@ -190,14 +203,17 @@ const Showcase = () => {
               </Card>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Call to Action */}
         <div className="text-center">
           <Card className="p-8 hero-gradient text-white">
-            <h2 className="text-2xl font-bold mb-4">Ready to Start Your Journey?</h2>
+            <h2 className="text-2xl font-bold mb-4">
+              Ready to Start Your Journey?
+            </h2>
             <p className="text-lg mb-6 text-white/90">
-              Discover amazing destinations and create unforgettable memories with Etour
+              Discover amazing destinations and create unforgettable memories
+              with Etour
             </p>
             <Button variant="secondary" size="xl" onClick={handleContinue}>
               Continue to Home

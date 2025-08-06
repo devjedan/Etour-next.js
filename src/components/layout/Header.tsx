@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import { 
-  Globe, 
-  Phone, 
-  Mail, 
-  Menu, 
+import {
+  Globe,
+  Phone,
+  Mail,
+  Menu,
   X,
   Search,
   MapPin,
   Home,
   User,
-  LogOut
+  LogOut,
 } from "lucide-react";
 
 const Header = () => {
@@ -34,29 +39,6 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-soft sticky top-0 z-50">
-      {/* Top Info Bar */}
-      <div className="bg-primary text-primary-foreground py-2 px-4">
-        <div className="container mx-auto flex justify-between items-center text-sm">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Phone className="w-4 h-4" />
-              <span>+91-11-2345-6789</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Mail className="w-4 h-4" />
-              <span>info@etour.com</span>
-            </div>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <Globe className="w-4 h-4" />
-            <select className="bg-transparent border-none text-primary-foreground">
-              <option value="en">English</option>
-              <option value="hi">हिंदी</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
@@ -81,8 +63,8 @@ const Header = () => {
                     key={item.path}
                     to={item.path}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:bg-primary hover:text-primary-foreground ${
-                      isActivePath(item.path) 
-                        ? "bg-primary text-primary-foreground" 
+                      isActivePath(item.path)
+                        ? "bg-primary text-primary-foreground"
                         : "text-foreground hover:text-primary-foreground"
                     }`}
                   >
@@ -92,27 +74,36 @@ const Header = () => {
                 );
               })}
             </nav>
-            
+
             {/* Auth Section - User authentication UI */}
             <div className="flex items-center gap-2 ml-4">
               {isAuthenticated ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="p-2 rounded-full hover:bg-muted">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="p-2 rounded-full hover:bg-muted"
+                    >
                       <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                         <User className="w-4 h-4 text-primary-foreground" />
                       </div>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 bg-background border shadow-lg">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-48 bg-background border shadow-lg"
+                  >
                     <DropdownMenuItem className="flex items-center gap-2 p-3 cursor-pointer hover:bg-muted">
                       <User className="w-4 h-4" />
                       <div className="flex flex-col">
                         <span className="font-medium">{user?.name}</span>
-                        <span className="text-xs text-muted-foreground">{user?.email}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {user?.email}
+                        </span>
                       </div>
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       onClick={logout}
                       className="flex items-center gap-2 p-3 cursor-pointer hover:bg-muted text-red-600 hover:text-red-700"
                     >
@@ -156,8 +147,8 @@ const Header = () => {
                     key={item.path}
                     to={item.path}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                      isActivePath(item.path) 
-                        ? "bg-primary text-primary-foreground" 
+                      isActivePath(item.path)
+                        ? "bg-primary text-primary-foreground"
                         : "text-foreground hover:bg-muted"
                     }`}
                     onClick={() => setIsMenuOpen(false)}
@@ -167,7 +158,7 @@ const Header = () => {
                   </Link>
                 );
               })}
-              
+
               {/* Mobile Auth Buttons - Responsive user authentication */}
               <div className="flex gap-2 mt-4 pt-4 border-t border-border">
                 {isAuthenticated ? (
@@ -178,13 +169,15 @@ const Header = () => {
                       </div>
                       <div className="flex flex-col">
                         <span className="font-medium">{user?.name}</span>
-                        <span className="text-xs text-muted-foreground">{user?.email}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {user?.email}
+                        </span>
                       </div>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full flex items-center gap-2 text-red-600 hover:text-red-700" 
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full flex items-center gap-2 text-red-600 hover:text-red-700"
                       onClick={() => {
                         logout();
                         setIsMenuOpen(false);
@@ -196,11 +189,25 @@ const Header = () => {
                   </div>
                 ) : (
                   <>
-                    <Button variant="outline" size="sm" className="flex-1" asChild>
-                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      asChild
+                    >
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                        Login
+                      </Link>
                     </Button>
-                    <Button variant="booking" size="sm" className="flex-1" asChild>
-                      <Link to="/signup" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
+                    <Button
+                      variant="booking"
+                      size="sm"
+                      className="flex-1"
+                      asChild
+                    >
+                      <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
+                        Sign Up
+                      </Link>
                     </Button>
                   </>
                 )}
@@ -214,10 +221,10 @@ const Header = () => {
       <div className="bg-secondary text-secondary-foreground py-2 overflow-hidden">
         <div className="crawling-text whitespace-nowrap">
           <span className="inline-block px-8">
-            🎉 Special Offer: 20% off on all International Tours! Book now and save big! 
-            | 🏔️ New Himalayan Adventure packages available | 
-            🏖️ Beach holidays starting from ₹15,000 | 
-            📱 Download our mobile app for exclusive deals
+            🎉 Special Offer: 20% off on all International Tours! Book now and
+            save big! | 🏔️ New Himalayan Adventure packages available | 🏖️ Beach
+            holidays starting from ₹15,000 | 📱 Download our mobile app for
+            exclusive deals
           </span>
         </div>
       </div>

@@ -4,23 +4,29 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { 
-  Plus, 
-  Minus, 
-  Calendar, 
-  Users, 
-  Mail, 
-  Phone, 
+import {
+  Plus,
+  Minus,
+  Calendar,
+  Users,
+  Mail,
+  Phone,
   MapPin,
   CreditCard,
   FileText,
   Check,
   ArrowLeft,
-  Download
+  Download,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -37,7 +43,7 @@ interface Passenger {
 const BookTourPage = () => {
   const { tourId } = useParams();
   const { toast } = useToast();
-  
+
   const [step, setStep] = useState(1); // 1: Details, 2: Passengers, 3: Payment, 4: Confirmation
   const [primaryPassenger, setPrimaryPassenger] = useState({
     name: "",
@@ -48,9 +54,9 @@ const BookTourPage = () => {
     city: "",
     state: "",
     pincode: "",
-    roomSharing: "twin" // Default room sharing
+    roomSharing: "twin", // Default room sharing
   });
-  
+
   const [passengers, setPassengers] = useState<Passenger[]>([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [roomSharing, setRoomSharing] = useState("twin"); // twin, single, triple
@@ -62,7 +68,7 @@ const BookTourPage = () => {
     name: "Golden Triangle Deluxe",
     code: "GT001",
     duration: "6 Days / 5 Nights",
-    image: "/api/placeholder/400/300"
+    image: "/api/placeholder/400/300",
   };
 
   // Dynamic cost details from backend - Replace with API call: getCostDetails(tourId)
@@ -70,17 +76,33 @@ const BookTourPage = () => {
     singlePersonCost: 22999,
     extraPersonCost: 15999, // Twin sharing price
     childWithBed: 9999,
-    childWithoutBed: 4999
+    childWithoutBed: 4999,
   };
 
   // Available dates - Replace with API call: getAvailableDates(tourId)
   const availableDates = [
-    { date: "15 Jan 2024", multiplier: 1.0 },   // Regular pricing
-    { date: "22 Jan 2024", multiplier: 1.1 },   // 10% markup
-    { date: "29 Jan 2024", multiplier: 1.0 },   // Regular pricing  
-    { date: "05 Feb 2024", multiplier: 1.2 }    // 20% markup for peak season
+    { date: "15 Jan 2024", multiplier: 1.0 }, // Regular pricing
+    { date: "22 Jan 2024", multiplier: 1.1 }, // 10% markup
+    { date: "29 Jan 2024", multiplier: 1.0 }, // Regular pricing
+    { date: "05 Feb 2024", multiplier: 1.2 }, // 20% markup for peak season
   ];
 
+  const formatRoomType = (type: string) => {
+    switch (type) {
+      case "single":
+        return "Single Occupancy";
+      case "twin":
+        return "Twin Sharing";
+      case "triple":
+        return "Triple Sharing";
+      case "childWithBed":
+        return "Child with Bed";
+      case "childWithoutBed":
+        return "Child without Bed";
+      default:
+        return "N/A";
+    }
+  };
   const addPassenger = () => {
     const newPassenger: Passenger = {
       id: Date.now().toString(),
@@ -89,57 +111,68 @@ const BookTourPage = () => {
       gender: "",
       email: "",
       phone: "",
-      roomSharing: "twin" // Default room sharing
+      roomSharing: "twin", // Default room sharing
     };
     setPassengers([...passengers, newPassenger]);
   };
 
   const removePassenger = (id: string) => {
-    setPassengers(passengers.filter(p => p.id !== id));
+    setPassengers(passengers.filter((p) => p.id !== id));
   };
 
-  const updatePassenger = (id: string, field: keyof Passenger, value: string | number) => {
-    setPassengers(passengers.map(p => 
-      p.id === id ? { ...p, [field]: value } : p
-    ));
+  const updatePassenger = (
+    id: string,
+    field: keyof Passenger,
+    value: string | number
+  ) => {
+    setPassengers(
+      passengers.map((p) => (p.id === id ? { ...p, [field]: value } : p))
+    );
   };
 
   // Dynamic pricing calculation based on age and room type
   const calculatePrice = (age: number, roomType: string = "twin") => {
-    const dateMultiplier = availableDates.find(d => d.date === selectedDate)?.multiplier || 1.0;
-    
+    const dateMultiplier =
+      availableDates.find((d) => d.date === selectedDate)?.multiplier || 1.0;
+
     if (age <= 5) return 0; // Free for children under 5
-    
+
     let basePrice = 0;
     if (age <= 12) {
       // Child pricing
-      basePrice = roomType === 'childWithoutBed' ? costDetails.childWithoutBed : costDetails.childWithBed;
+      basePrice =
+        roomType === "childWithoutBed"
+          ? costDetails.childWithoutBed
+          : costDetails.childWithBed;
     } else {
-      // Adult pricing  
+      // Adult pricing
       switch (roomType) {
-        case 'single':
+        case "single":
           basePrice = costDetails.singlePersonCost;
           break;
-        case 'triple':
+        case "triple":
           basePrice = costDetails.extraPersonCost * 0.9; // 10% discount for triple
           break;
         default:
           basePrice = costDetails.extraPersonCost; // Twin sharing
       }
     }
-    
+
     return basePrice * dateMultiplier;
   };
 
   const getTotalPrice = () => {
     // Primary passenger price
-    const primaryPrice = calculatePrice(primaryPassenger.age, primaryPassenger.roomSharing);
-    
+    const primaryPrice = calculatePrice(
+      primaryPassenger.age,
+      primaryPassenger.roomSharing
+    );
+
     // Additional passengers total
     const passengersTotal = passengers.reduce((total, passenger) => {
       return total + calculatePrice(passenger.age, passenger.roomSharing);
     }, 0);
-    
+
     return primaryPrice + passengersTotal;
   };
 
@@ -154,11 +187,11 @@ const BookTourPage = () => {
     //   selectedDate
     // };
     // await processPayment(paymentData);
-    
+
     const orderNum = `ET${Date.now().toString().slice(-8)}`;
     setOrderNumber(orderNum);
     setStep(4);
-    
+
     toast({
       title: "Payment Successful!",
       description: `Your booking has been confirmed. Order #${orderNum}`,
@@ -181,20 +214,48 @@ const BookTourPage = () => {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-8 h-8 text-green-600" />
             </div>
-            <h1 className="text-2xl font-bold text-green-600 mb-2">Booking Confirmed!</h1>
+            <h1 className="text-2xl font-bold text-green-600 mb-2">
+              Booking Confirmed!
+            </h1>
             <p className="text-muted-foreground mb-4">
-              Thank you for choosing Etour. Your booking has been successfully confirmed.
+              Thank you for choosing Etour. Your booking has been successfully
+              confirmed.
             </p>
-            
+
             <div className="bg-muted p-4 rounded-lg mb-6">
               <h3 className="font-semibold mb-2">Booking Details</h3>
               <div className="text-sm space-y-1">
-                <p><strong>Order Number:</strong> {orderNumber}</p>
-                <p><strong>Tour:</strong> {tour.name}</p>
-                <p><strong>Date:</strong> {selectedDate}</p>
-                <p><strong>Room Type:</strong> {roomSharing === 'single' ? 'Single Occupancy' : roomSharing === 'twin' ? 'Twin Sharing' : 'Triple Sharing'}</p>
-                <p><strong>Passengers:</strong> {passengers.length + 1}</p>
-                <p><strong>Total Amount:</strong> ₹{getTotalPrice().toLocaleString()}</p>
+                <p>
+                  <strong>Order Number:</strong> {orderNumber}
+                </p>
+                <p>
+                  <strong>Tour:</strong> {tour.name}
+                </p>
+                <p>
+                  <strong>Date:</strong> {selectedDate}
+                </p>
+                <div>
+                  <p className="font-semibold">Room Types:</p>
+                  <ul className="text-sm list-disc pl-5">
+                    <li>
+                      {primaryPassenger.name || "Primary Passenger"} –{" "}
+                      {formatRoomType(primaryPassenger.roomSharing)}
+                    </li>
+                    {passengers.map((p, i) => (
+                      <li key={p.id}>
+                        {p.name || `Passenger ${i + 2}`} –{" "}
+                        {formatRoomType(p.roomSharing)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <p>
+                  <strong>Passengers:</strong> {passengers.length + 1}
+                </p>
+                <p>
+                  <strong>Total Amount:</strong> ₹
+                  {getTotalPrice().toLocaleString()}
+                </p>
               </div>
             </div>
 
@@ -203,7 +264,7 @@ const BookTourPage = () => {
                 <Download className="w-4 h-4" />
                 Download Receipt
               </Button>
-              <Button onClick={() => window.location.href = "/home"}>
+              <Button onClick={() => (window.location.href = "/home")}>
                 Back to Home
               </Button>
             </div>
@@ -217,7 +278,7 @@ const BookTourPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       {/* Progress Steps */}
       <section className="py-8 bg-muted">
         <div className="container mx-auto px-4">
@@ -227,18 +288,28 @@ const BookTourPage = () => {
                 { num: 1, title: "Tour Details", active: step >= 1 },
                 { num: 2, title: "Passengers", active: step >= 2 },
                 { num: 3, title: "Payment", active: step >= 3 },
-                { num: 4, title: "Confirmation", active: step >= 4 }
+                { num: 4, title: "Confirmation", active: step >= 4 },
               ].map((stepItem, index) => (
                 <div key={index} className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                    stepItem.active ? "bg-primary text-primary-foreground" : "bg-gray-300 text-gray-600"
-                  }`}>
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+                      stepItem.active
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-gray-300 text-gray-600"
+                    }`}
+                  >
                     {stepItem.num}
                   </div>
-                  <span className={`ml-2 text-sm ${stepItem.active ? "text-primary" : "text-gray-600"}`}>
+                  <span
+                    className={`ml-2 text-sm ${
+                      stepItem.active ? "text-primary" : "text-gray-600"
+                    }`}
+                  >
                     {stepItem.title}
                   </span>
-                  {index < 3 && <div className="w-16 h-0.5 mx-4 bg-gray-300"></div>}
+                  {index < 3 && (
+                    <div className="w-16 h-0.5 mx-4 bg-gray-300"></div>
+                  )}
                 </div>
               ))}
             </div>
@@ -253,7 +324,9 @@ const BookTourPage = () => {
             {step === 1 && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <Card className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Tour Information</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Tour Information
+                  </h2>
                   <div className="space-y-4">
                     <div>
                       <Label>Tour Code</Label>
@@ -268,15 +341,24 @@ const BookTourPage = () => {
                       <Input value={tour.duration} disabled />
                     </div>
                     <div>
-                      <Label htmlFor="departureDate">Select Departure Date</Label>
-                      <Select value={selectedDate} onValueChange={setSelectedDate}>
+                      <Label htmlFor="departureDate">
+                        Select Departure Date
+                      </Label>
+                      <Select
+                        value={selectedDate}
+                        onValueChange={setSelectedDate}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Choose date" />
                         </SelectTrigger>
                         <SelectContent>
                           {availableDates.map((date) => (
                             <SelectItem key={date.date} value={date.date}>
-                              {date.date} {date.multiplier > 1 && `(+${Math.round((date.multiplier - 1) * 100)}%)`}
+                              {date.date}{" "}
+                              {date.multiplier > 1 &&
+                                `(+${Math.round(
+                                  (date.multiplier - 1) * 100
+                                )}%)`}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -284,44 +366,64 @@ const BookTourPage = () => {
                     </div>
 
                     {/* Global Room Sharing Options - For info only */}
-                    <div>
-                      <Label htmlFor="roomSharing">Default Room Sharing Info</Label>
-                      <Select value={roomSharing} onValueChange={setRoomSharing}>
+                    {/* <div>
+                      <Label htmlFor="roomSharing">
+                        Default Room Sharing Info
+                      </Label>
+                      <Select
+                        value={roomSharing}
+                        onValueChange={setRoomSharing}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select room type" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="single">
-                            Single Occupancy - ₹{costDetails.singlePersonCost.toLocaleString()}/person
+                            Single Occupancy - ₹
+                            {costDetails.singlePersonCost.toLocaleString()}
+                            /person
                           </SelectItem>
                           <SelectItem value="twin">
-                            Twin Sharing - ₹{costDetails.extraPersonCost.toLocaleString()}/person
+                            Twin Sharing - ₹
+                            {costDetails.extraPersonCost.toLocaleString()}
+                            /person
                           </SelectItem>
                           <SelectItem value="triple">
-                            Triple Sharing - ₹{(costDetails.extraPersonCost * 0.9).toLocaleString()}/person
+                            Triple Sharing - ₹
+                            {(
+                              costDetails.extraPersonCost * 0.9
+                            ).toLocaleString()}
+                            /person
                           </SelectItem>
                         </SelectContent>
                       </Select>
                       <p className="text-xs text-muted-foreground mt-1">
                         Individual room selection available for each passenger
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                 </Card>
 
                 <Card className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Primary Passenger Details</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Primary Passenger Details
+                  </h2>
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="name">Full Name *</Label>
                       <Input
                         id="name"
                         value={primaryPassenger.name}
-                        onChange={(e) => setPrimaryPassenger({...primaryPassenger, name: e.target.value})}
+                        onChange={(e) =>
+                          setPrimaryPassenger({
+                            ...primaryPassenger,
+                            name: e.target.value,
+                          })
+                        }
                         placeholder="Enter full name"
                       />
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="age">Age *</Label>
@@ -329,7 +431,12 @@ const BookTourPage = () => {
                           id="age"
                           type="number"
                           value={primaryPassenger.age || ""}
-                          onChange={(e) => setPrimaryPassenger({...primaryPassenger, age: parseInt(e.target.value) || 0})}
+                          onChange={(e) =>
+                            setPrimaryPassenger({
+                              ...primaryPassenger,
+                              age: parseInt(e.target.value) || 0,
+                            })
+                          }
                           placeholder="Enter age"
                           min="0"
                           max="120"
@@ -337,9 +444,14 @@ const BookTourPage = () => {
                       </div>
                       <div>
                         <Label htmlFor="primaryRoomSharing">Room Type *</Label>
-                        <Select 
-                          value={primaryPassenger.roomSharing} 
-                          onValueChange={(value) => setPrimaryPassenger({...primaryPassenger, roomSharing: value})}
+                        <Select
+                          value={primaryPassenger.roomSharing}
+                          onValueChange={(value) =>
+                            setPrimaryPassenger({
+                              ...primaryPassenger,
+                              roomSharing: value,
+                            })
+                          }
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select room type" />
@@ -348,22 +460,29 @@ const BookTourPage = () => {
                             {primaryPassenger.age <= 12 ? (
                               <>
                                 <SelectItem value="childWithBed">
-                                  Child with Bed - ₹{costDetails.childWithBed.toLocaleString()}
+                                  Child with Bed - ₹
+                                  {costDetails.childWithBed.toLocaleString()}
                                 </SelectItem>
                                 <SelectItem value="childWithoutBed">
-                                  Child without Bed - ₹{costDetails.childWithoutBed.toLocaleString()}
+                                  Child without Bed - ₹
+                                  {costDetails.childWithoutBed.toLocaleString()}
                                 </SelectItem>
                               </>
                             ) : (
                               <>
                                 <SelectItem value="single">
-                                  Single Occupancy - ₹{costDetails.singlePersonCost.toLocaleString()}
+                                  Single Occupancy - ₹
+                                  {costDetails.singlePersonCost.toLocaleString()}
                                 </SelectItem>
                                 <SelectItem value="twin">
-                                  Twin Sharing - ₹{costDetails.extraPersonCost.toLocaleString()}
+                                  Twin Sharing - ₹
+                                  {costDetails.extraPersonCost.toLocaleString()}
                                 </SelectItem>
                                 <SelectItem value="triple">
-                                  Triple Sharing - ₹{(costDetails.extraPersonCost * 0.9).toLocaleString()}
+                                  Triple Sharing - ₹
+                                  {(
+                                    costDetails.extraPersonCost * 0.9
+                                  ).toLocaleString()}
                                 </SelectItem>
                               </>
                             )}
@@ -378,7 +497,12 @@ const BookTourPage = () => {
                         id="email"
                         type="email"
                         value={primaryPassenger.email}
-                        onChange={(e) => setPrimaryPassenger({...primaryPassenger, email: e.target.value})}
+                        onChange={(e) =>
+                          setPrimaryPassenger({
+                            ...primaryPassenger,
+                            email: e.target.value,
+                          })
+                        }
                         placeholder="Enter email address"
                       />
                     </div>
@@ -387,7 +511,12 @@ const BookTourPage = () => {
                       <Input
                         id="phone"
                         value={primaryPassenger.phone}
-                        onChange={(e) => setPrimaryPassenger({...primaryPassenger, phone: e.target.value})}
+                        onChange={(e) =>
+                          setPrimaryPassenger({
+                            ...primaryPassenger,
+                            phone: e.target.value,
+                          })
+                        }
                         placeholder="Enter phone number"
                       />
                     </div>
@@ -396,7 +525,12 @@ const BookTourPage = () => {
                       <Input
                         id="address"
                         value={primaryPassenger.address}
-                        onChange={(e) => setPrimaryPassenger({...primaryPassenger, address: e.target.value})}
+                        onChange={(e) =>
+                          setPrimaryPassenger({
+                            ...primaryPassenger,
+                            address: e.target.value,
+                          })
+                        }
                         placeholder="Enter address"
                       />
                     </div>
@@ -406,7 +540,12 @@ const BookTourPage = () => {
                         <Input
                           id="city"
                           value={primaryPassenger.city}
-                          onChange={(e) => setPrimaryPassenger({...primaryPassenger, city: e.target.value})}
+                          onChange={(e) =>
+                            setPrimaryPassenger({
+                              ...primaryPassenger,
+                              city: e.target.value,
+                            })
+                          }
                           placeholder="City"
                         />
                       </div>
@@ -415,7 +554,12 @@ const BookTourPage = () => {
                         <Input
                           id="pincode"
                           value={primaryPassenger.pincode}
-                          onChange={(e) => setPrimaryPassenger({...primaryPassenger, pincode: e.target.value})}
+                          onChange={(e) =>
+                            setPrimaryPassenger({
+                              ...primaryPassenger,
+                              pincode: e.target.value,
+                            })
+                          }
                           placeholder="Pincode"
                         />
                       </div>
@@ -424,8 +568,13 @@ const BookTourPage = () => {
                     {/* Primary Passenger Price Display */}
                     <div className="p-3 bg-secondary/50 rounded-lg">
                       <p className="text-sm text-muted-foreground">
-                        <strong>Your Price:</strong> ₹{calculatePrice(primaryPassenger.age, primaryPassenger.roomSharing).toLocaleString()}
-                        {primaryPassenger.age <= 5 && " (Free for children under 5)"}
+                        <strong>Your Price:</strong> ₹
+                        {calculatePrice(
+                          primaryPassenger.age,
+                          primaryPassenger.roomSharing
+                        ).toLocaleString()}
+                        {primaryPassenger.age <= 5 &&
+                          " (Free for children under 5)"}
                       </p>
                     </div>
                   </div>
@@ -437,7 +586,9 @@ const BookTourPage = () => {
             {step === 2 && (
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold">Additional Passengers</h2>
+                  <h2 className="text-xl font-semibold">
+                    Additional Passengers
+                  </h2>
                   <Button onClick={addPassenger} variant="outline">
                     <Plus className="w-4 h-4" />
                     Add Passenger
@@ -448,14 +599,18 @@ const BookTourPage = () => {
                   <div className="text-center py-8 text-muted-foreground">
                     <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No additional passengers added yet.</p>
-                    <p className="text-sm">Click "Add Passenger" to add more travelers.</p>
+                    <p className="text-sm">
+                      Click "Add Passenger" to add more travelers.
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-6">
                     {passengers.map((passenger, index) => (
                       <div key={passenger.id} className="p-4 border rounded-lg">
                         <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-semibold">Passenger {index + 2}</h3>
+                          <h3 className="font-semibold">
+                            Passenger {index + 2}
+                          </h3>
                           <Button
                             onClick={() => removePassenger(passenger.id)}
                             variant="outline"
@@ -465,13 +620,19 @@ const BookTourPage = () => {
                             Remove
                           </Button>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
                             <Label>Full Name *</Label>
                             <Input
                               value={passenger.name}
-                              onChange={(e) => updatePassenger(passenger.id, "name", e.target.value)}
+                              onChange={(e) =>
+                                updatePassenger(
+                                  passenger.id,
+                                  "name",
+                                  e.target.value
+                                )
+                              }
                               placeholder="Enter full name"
                             />
                           </div>
@@ -480,15 +641,23 @@ const BookTourPage = () => {
                             <Input
                               type="number"
                               value={passenger.age || ""}
-                              onChange={(e) => updatePassenger(passenger.id, "age", parseInt(e.target.value) || 0)}
+                              onChange={(e) =>
+                                updatePassenger(
+                                  passenger.id,
+                                  "age",
+                                  parseInt(e.target.value) || 0
+                                )
+                              }
                               placeholder="Enter age"
                             />
                           </div>
                           <div>
                             <Label>Gender *</Label>
-                            <Select 
-                              value={passenger.gender} 
-                              onValueChange={(value) => updatePassenger(passenger.id, "gender", value)}
+                            <Select
+                              value={passenger.gender}
+                              onValueChange={(value) =>
+                                updatePassenger(passenger.id, "gender", value)
+                              }
                             >
                               <SelectTrigger>
                                 <SelectValue placeholder="Select gender" />
@@ -505,37 +674,52 @@ const BookTourPage = () => {
                         {/* Room Sharing for Additional Passengers */}
                         <div className="mt-4">
                           <Label>Room Type *</Label>
-                          <Select 
-                            value={passenger.roomSharing || ""} 
-                            onValueChange={(value) => updatePassenger(passenger.id, "roomSharing", value)}
+                          <Select
+                            value={passenger.roomSharing || ""}
+                            onValueChange={(value) =>
+                              updatePassenger(
+                                passenger.id,
+                                "roomSharing",
+                                value
+                              )
+                            }
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder={
-                                passenger.age <= 12 
-                                  ? "Select child accommodation" 
-                                  : "Select room sharing type"
-                              } />
+                              <SelectValue
+                                placeholder={
+                                  passenger.age <= 12
+                                    ? "Select child accommodation"
+                                    : "Select room sharing type"
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {passenger.age <= 12 ? (
                                 <>
                                   <SelectItem value="childWithBed">
-                                    Child with Bed - ₹{costDetails.childWithBed.toLocaleString()}
+                                    Child with Bed - ₹
+                                    {costDetails.childWithBed.toLocaleString()}
                                   </SelectItem>
                                   <SelectItem value="childWithoutBed">
-                                    Child without Bed - ₹{costDetails.childWithoutBed.toLocaleString()}
+                                    Child without Bed - ₹
+                                    {costDetails.childWithoutBed.toLocaleString()}
                                   </SelectItem>
                                 </>
                               ) : (
                                 <>
                                   <SelectItem value="single">
-                                    Single Occupancy - ₹{costDetails.singlePersonCost.toLocaleString()}
+                                    Single Occupancy - ₹
+                                    {costDetails.singlePersonCost.toLocaleString()}
                                   </SelectItem>
                                   <SelectItem value="twin">
-                                    Twin Sharing - ₹{costDetails.extraPersonCost.toLocaleString()}
+                                    Twin Sharing - ₹
+                                    {costDetails.extraPersonCost.toLocaleString()}
                                   </SelectItem>
                                   <SelectItem value="triple">
-                                    Triple Sharing - ₹{(costDetails.extraPersonCost * 0.9).toLocaleString()}
+                                    Triple Sharing - ₹
+                                    {(
+                                      costDetails.extraPersonCost * 0.9
+                                    ).toLocaleString()}
                                   </SelectItem>
                                 </>
                               )}
@@ -544,7 +728,11 @@ const BookTourPage = () => {
                         </div>
 
                         <div className="mt-4 text-sm text-muted-foreground">
-                          Price: ₹{calculatePrice(passenger.age, passenger.roomSharing).toLocaleString()} 
+                          Price: ₹
+                          {calculatePrice(
+                            passenger.age,
+                            passenger.roomSharing
+                          ).toLocaleString()}
                           {passenger.age <= 5 && " (Free for children under 5)"}
                         </div>
                       </div>
@@ -558,7 +746,9 @@ const BookTourPage = () => {
             {step === 3 && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <Card className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Booking Summary</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Booking Summary
+                  </h2>
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span>Tour:</span>
@@ -573,43 +763,83 @@ const BookTourPage = () => {
                       <span>{primaryPassenger.name}</span>
                     </div>
                     <Separator />
-                    
+
                     <div>
                       <h3 className="font-semibold mb-2">Price Breakdown:</h3>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between text-xs text-muted-foreground">
                           <span>Room Type:</span>
-                          <span>{roomSharing === 'single' ? 'Single Occupancy' : roomSharing === 'twin' ? 'Twin Sharing' : 'Triple Sharing'}</span>
+                          <span>
+                            {primaryPassenger.roomSharing === "single"
+                              ? "Single Occupancy"
+                              : primaryPassenger.roomSharing === "twin"
+                              ? "Twin Sharing"
+                              : primaryPassenger.roomSharing === "triple"
+                              ? "Triple Sharing"
+                              : primaryPassenger.roomSharing === "childWithBed"
+                              ? "Child with Bed"
+                              : primaryPassenger.roomSharing ===
+                                "childWithoutBed"
+                              ? "Child without Bed"
+                              : "N/A"}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Primary Passenger:</span>
-                          <span>₹{calculatePrice(primaryPassenger.age, primaryPassenger.roomSharing).toLocaleString()}</span>
+                          <span>
+                            ₹
+                            {calculatePrice(
+                              primaryPassenger.age,
+                              primaryPassenger.roomSharing
+                            ).toLocaleString()}
+                          </span>
                         </div>
                         {passengers.map((passenger, index) => (
-                          <div key={passenger.id} className="flex justify-between">
-                            <span>{passenger.name || `Passenger ${index + 2}`}:</span>
-                            <span>₹{calculatePrice(passenger.age, passenger.roomSharing).toLocaleString()}</span>
+                          <div
+                            key={passenger.id}
+                            className="flex justify-between"
+                          >
+                            <span>
+                              {passenger.name || `Passenger ${index + 2}`}:
+                            </span>
+                            <span>
+                              ₹
+                              {calculatePrice(
+                                passenger.age,
+                                passenger.roomSharing
+                              ).toLocaleString()}
+                            </span>
                           </div>
                         ))}
                       </div>
                     </div>
-                    
+
                     <Separator />
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total Amount:</span>
-                      <span className="text-primary">₹{getTotalPrice().toLocaleString()}</span>
+                      <span className="text-primary">
+                        ₹{getTotalPrice().toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 </Card>
 
                 <Card className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Payment Gateway</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Payment Gateway
+                  </h2>
                   <div className="text-center py-8">
                     <CreditCard className="w-16 h-16 mx-auto mb-4 text-primary" />
                     <p className="text-muted-foreground mb-6">
-                      You will be redirected to our secure payment gateway to complete your booking.
+                      You will be redirected to our secure payment gateway to
+                      complete your booking.
                     </p>
-                    <Button onClick={handlePayment} variant="booking" size="lg" className="w-full">
+                    <Button
+                      onClick={handlePayment}
+                      variant="booking"
+                      size="lg"
+                      className="w-full"
+                    >
                       <CreditCard className="w-4 h-4" />
                       Pay ₹{getTotalPrice().toLocaleString()}
                     </Button>
@@ -621,20 +851,23 @@ const BookTourPage = () => {
             {/* Navigation Buttons */}
             <div className="flex justify-between mt-8">
               {step > 1 && (
-                <Button 
-                  onClick={() => setStep(step - 1)} 
-                  variant="outline"
-                >
+                <Button onClick={() => setStep(step - 1)} variant="outline">
                   <ArrowLeft className="w-4 h-4" />
                   Previous
                 </Button>
               )}
-              
+
               {step < 3 && (
-                <Button 
-                  onClick={() => setStep(step + 1)} 
+                <Button
+                  onClick={() => setStep(step + 1)}
                   className="ml-auto"
-                  disabled={step === 1 && (!selectedDate || !roomSharing || !primaryPassenger.name || !primaryPassenger.email)}
+                  disabled={
+                    step === 1 &&
+                    (!selectedDate ||
+                      !roomSharing ||
+                      !primaryPassenger.name ||
+                      !primaryPassenger.email)
+                  }
                 >
                   Next Step
                 </Button>

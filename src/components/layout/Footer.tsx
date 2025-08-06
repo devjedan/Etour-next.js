@@ -34,12 +34,6 @@ const Footer = () => {
             </p>
             <div className="flex gap-3">
               <a href="#" className="hover:text-secondary transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-secondary transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-secondary transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
               <a href="#" className="hover:text-secondary transition-colors">
@@ -82,14 +76,6 @@ const Footer = () => {
                   className="hover:text-secondary transition-colors"
                 >
                   Search Tours
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/about"
-                  className="hover:text-secondary transition-colors"
-                >
-                  About Us
                 </Link>
               </li>
             </ul>
@@ -143,16 +129,14 @@ const Footer = () => {
                 <p>
                   Etour Travels Pvt. Ltd.
                   <br />
-                  123, Travel Plaza
+                  SM Vita, Juhu
                   <br />
-                  Connaught Place
-                  <br />
-                  New Delhi - 110001, India
+                  Mumbai - 110001, India
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                <span>+91-11-2345-6789</span>
+                <span>+91-91-2345-6789</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
@@ -210,7 +194,7 @@ const Footer = () => {
             </div>
             <div className="text-center">
               <p className="opacity-90">
-                © 2024 Etour Travels Pvt. Ltd. All rights reserved.
+                © 2025 Etour Travels Pvt. Ltd. All rights reserved.
               </p>
             </div>
           </div>
