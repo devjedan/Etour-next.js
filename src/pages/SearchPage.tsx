@@ -42,7 +42,7 @@ const SearchPage = () => {
       price: "₹15,999",
       rating: 4.8,
       image: heroBanner,
-      category: "Heritage",
+      category: "Cultural",
       description: "Explore Delhi, Agra, and Jaipur in luxury"
     },
     {
@@ -71,15 +71,15 @@ const SearchPage = () => {
     },
     {
       id: "rajasthan-royal",
-      name: "Rajasthan Royal Heritage",
+      name: "Rajasthan Royal Cultural",
       startDate: "10 Feb 2024",
       endDate: "17 Feb 2024",
       duration: "8 Days / 7 Nights",
       price: "₹25,999",
       rating: 4.7,
       image: heroBanner,
-      category: "Heritage",
-      description: "Experience the royal heritage of Rajasthan"
+      category: "Cultural",
+      description: "Experience the royal culture of Rajasthan"
     },
     {
       id: "himachal-adventure",
@@ -172,11 +172,11 @@ const SearchPage = () => {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="heritage">Heritage</SelectItem>
                     <SelectItem value="adventure">Adventure</SelectItem>
                     <SelectItem value="beach">Beach</SelectItem>
                     <SelectItem value="nature">Nature</SelectItem>
                     <SelectItem value="spiritual">Spiritual</SelectItem>
+                    <SelectItem value="cultural">Cultural</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

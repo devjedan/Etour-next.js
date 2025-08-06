@@ -14,7 +14,7 @@ import {
   Users,
   Star
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import heroBanner from "@/assets/hero-banner.jpg";
 
 const SectorPage = () => {
@@ -22,10 +22,15 @@ const SectorPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  // Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Mock data for different sectors
   const sectorData = {
     domestic: {
-      title: "Domestic Tours",
+      title: "Domestic Tours", 
       description: "Explore the incredible diversity of India",
       breadcrumb: "Tours >> Domestic",
       subSectors: [
@@ -115,6 +120,68 @@ const SectorPage = () => {
           image: heroBanner,
           tourCount: 20,
           startingPrice: "₹125,999"
+        }
+      ]
+    },
+    adventure: {
+      title: "Adventure Tours",
+      description: "Thrilling adventures and outdoor activities",
+      breadcrumb: "Tours >> Adventure",
+      subSectors: [
+        {
+          id: "mountain-adventure",
+          name: "Mountain Adventures",
+          description: "Trekking, climbing, and mountain expeditions",
+          image: heroBanner,
+          tourCount: 15,
+          startingPrice: "₹12,999"
+        },
+        {
+          id: "water-sports",
+          name: "Water Sports",
+          description: "River rafting, scuba diving, water activities",
+          image: heroBanner,
+          tourCount: 12,
+          startingPrice: "₹9,999"
+        },
+        {
+          id: "wildlife-adventure",
+          name: "Wildlife Adventures",
+          description: "Safari tours and wildlife photography",
+          image: heroBanner,
+          tourCount: 8,
+          startingPrice: "₹14,999"
+        }
+      ]
+    },
+    family: {
+      title: "Family Tours",
+      description: "Perfect getaways for the entire family",
+      breadcrumb: "Tours >> Family",
+      subSectors: [
+        {
+          id: "family-hill-stations",
+          name: "Hill Station Retreats",
+          description: "Cool weather and family-friendly activities",
+          image: heroBanner,
+          tourCount: 20,
+          startingPrice: "₹11,999"
+        },
+        {
+          id: "family-beaches",
+          name: "Beach Destinations",
+          description: "Sun, sand and family fun",
+          image: heroBanner,
+          tourCount: 16,
+          startingPrice: "₹13,999"
+        },
+        {
+          id: "family-cultural",
+          name: "Cultural Tours",
+          description: "Educational and cultural experiences",
+          image: heroBanner,
+          tourCount: 14,
+          startingPrice: "₹10,999"
         }
       ]
     },

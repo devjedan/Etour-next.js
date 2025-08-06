@@ -33,6 +33,7 @@ export interface PassengerData {
   city: string;
   state: string;
   pincode: string;
+  roomSharing: string; // single, twin, triple, childWithBed, childWithoutBed
   passportNumber?: string;
   passportExpiry?: string;
   emergencyContactName?: string;
@@ -48,7 +49,13 @@ interface PassengerFormProps {
   isLead?: boolean;
   onUpdate: (id: string, field: keyof PassengerData, value: any) => void;
   onRemove?: (id: string) => void;
-  tourPrice: number;
+  // Dynamic pricing from backend - Replace with API call
+  costDetails: {
+    singlePersonCost: number;
+    extraPersonCost: number;
+    childWithBed: number;
+    childWithoutBed: number;
+  };
 }
 
 const PassengerForm = ({ 
@@ -57,20 +64,63 @@ const PassengerForm = ({
   isLead = false, 
   onUpdate, 
   onRemove, 
-  tourPrice 
+  costDetails
 }: PassengerFormProps) => {
+  // Component for collecting passenger information for tour bookings
+  // Supports different pricing based on age groups and room sharing options
   const [expandedSections, setExpandedSections] = useState({
     personal: true,
     contact: false,
+    roomSharing: false, // Added room sharing section
     passport: false,
     emergency: false,
     preferences: false
   });
 
+  // Dynamic pricing calculation based on age and room type from backend
   const calculatePassengerPrice = () => {
     if (passenger.age <= 5) return 0; // Free for children under 5
-    if (passenger.age <= 12) return tourPrice * 0.6; // 40% discount for children
-    return tourPrice;
+    
+    // Age-based room sharing options
+    if (passenger.age <= 12) {
+      // Child pricing options
+      switch (passenger.roomSharing) {
+        case 'childWithBed':
+          return costDetails.childWithBed;
+        case 'childWithoutBed':
+          return costDetails.childWithoutBed;
+        default:
+          return costDetails.childWithBed; // Default to child with bed
+      }
+    } else {
+      // Adult pricing options
+      switch (passenger.roomSharing) {
+        case 'single':
+          return costDetails.singlePersonCost;
+        case 'twin':
+          return costDetails.extraPersonCost;
+        case 'triple':
+          return costDetails.extraPersonCost * 0.9; // 10% discount for triple
+        default:
+          return costDetails.extraPersonCost; // Default to twin sharing
+      }
+    }
+  };
+
+  // Get available room options based on passenger age
+  const getRoomOptions = () => {
+    if (passenger.age <= 12) {
+      return [
+        { value: 'childWithBed', label: `Child with Bed - ₹${costDetails.childWithBed.toLocaleString()}` },
+        { value: 'childWithoutBed', label: `Child without Bed - ₹${costDetails.childWithoutBed.toLocaleString()}` }
+      ];
+    } else {
+      return [
+        { value: 'single', label: `Single Occupancy - ₹${costDetails.singlePersonCost.toLocaleString()}` },
+        { value: 'twin', label: `Twin Sharing - ₹${costDetails.extraPersonCost.toLocaleString()}` },
+        { value: 'triple', label: `Triple Sharing - ₹${(costDetails.extraPersonCost * 0.9).toLocaleString()}` }
+      ];
+    }
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -292,6 +342,56 @@ const PassengerForm = ({
                   placeholder="Enter pincode"
                 />
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Room Sharing Options */}
+        <div>
+          <button
+            type="button"
+            onClick={() => toggleSection('roomSharing')}
+            className="flex items-center justify-between w-full text-left font-medium mb-4"
+          >
+            <span>Room & Pricing Options *</span>
+            <Plus className={`w-4 h-4 transition-transform ${expandedSections.roomSharing ? 'rotate-45' : ''}`} />
+          </button>
+          
+          {expandedSections.roomSharing && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor={`roomSharing-${passenger.id}`}>
+                  {passenger.age <= 12 ? 'Child Accommodation *' : 'Room Sharing Type *'}
+                </Label>
+                <Select 
+                  value={passenger.roomSharing || ''} 
+                  onValueChange={(value) => onUpdate(passenger.id, "roomSharing", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={
+                      passenger.age <= 12 
+                        ? "Select child accommodation" 
+                        : "Select room sharing type"
+                    } />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getRoomOptions().map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {passenger.roomSharing && (
+                <div className="p-3 bg-secondary/50 rounded-lg">
+                  <p className="text-sm text-muted-foreground">
+                    <strong>Selected Price:</strong> ₹{calculatePassengerPrice().toLocaleString()}
+                    {passenger.age <= 5 && " (Free for children under 5)"}
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

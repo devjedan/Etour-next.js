@@ -34,12 +34,6 @@ const Footer = () => {
             </p>
             <div className="flex gap-3">
               <a href="#" className="hover:text-secondary transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-secondary transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-secondary transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
               <a href="#" className="hover:text-secondary transition-colors">
@@ -84,14 +78,7 @@ const Footer = () => {
                   Search Tours
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/about"
-                  className="hover:text-secondary transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
+
             </ul>
           </div>
 
@@ -109,14 +96,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/sector/heritage"
-                  className="hover:text-secondary transition-colors"
-                >
-                  Heritage Tours
-                </Link>
-              </li>
-              <li>
-                <Link
+
                   to="/sector/sports"
                   className="hover:text-secondary transition-colors"
                 >
@@ -151,16 +131,12 @@ const Footer = () => {
                 <p>
                   Etour Travels Pvt. Ltd.
                   <br />
-                  SM Vita, Gulmohar Road
-                  <br />
-                  Juhu
-                  <br />
-                  Mumbai 400001, India
+
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                <span>+91-90-0467-8994</span>
+
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
@@ -194,10 +170,7 @@ const Footer = () => {
                 Site Map
               </Link>
               <span className="text-primary-light/60">|</span>
-              {/* <Link to="/career" className="hover:text-secondary transition-colors">
-                Career
-              </Link> */}
-              {/* <span className="text-primary-light/60">|</span> */}
+
               <Link
                 to="/terms"
                 className="hover:text-secondary transition-colors"

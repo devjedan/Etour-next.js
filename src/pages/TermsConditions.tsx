@@ -66,10 +66,38 @@ const TermsConditions = () => {
               <p className="mb-4">
                 Any complaints must be reported immediately to our tour guide or local representative. Disputes will be handled according to Indian law and jurisdiction of Delhi courts.
               </p>
-              
-              <p className="text-sm text-muted-foreground mt-8">
-                Last updated: January 2024
+
+              <h3 className="text-xl font-semibold mb-4">9. Age Restrictions</h3>
+              <p className="mb-4">
+                Children under 5 years travel free of charge. Children between 5-12 years are eligible for discounted rates. All minors must be accompanied by an adult guardian.
               </p>
+
+              <h3 className="text-xl font-semibold mb-4">10. Health and Safety</h3>
+              <p className="mb-4">
+                Travelers with medical conditions must inform us at the time of booking. We reserve the right to refuse participation if health conditions pose risks to the traveler or group.
+              </p>
+
+              <h3 className="text-xl font-semibold mb-4">11. Photography and Privacy</h3>
+              <p className="mb-4">
+                ETour may use photographs taken during tours for promotional purposes. Travelers who do not wish to be photographed should inform our representative.
+              </p>
+
+              <h3 className="text-xl font-semibold mb-4">12. Environmental Responsibility</h3>
+              <p className="mb-4">
+                We are committed to responsible tourism. Travelers are expected to respect local customs, environment, and wildlife protection guidelines.
+              </p>
+
+              <h3 className="text-xl font-semibold mb-4">13. Acceptance of Terms</h3>
+              <p className="mb-4">
+                By booking with ETour, you acknowledge that you have read, understood, and agree to be bound by these terms and conditions.
+              </p>
+              
+              <div className="mt-8 p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Last updated:</strong> January 2024<br/>
+                  <strong>Contact:</strong> For any queries regarding these terms, please contact us at info@etour.com or +91-11-2345-6789
+                </p>
+              </div>
             </div>
           </Card>
         </div>

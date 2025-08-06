@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
+
   Globe,
   Phone,
   Mail,
@@ -10,11 +11,13 @@ import {
   Search,
   MapPin,
   Home,
+
 } from "lucide-react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, logout, isAuthenticated } = useAuth();
 
   const menuItems = [
     { name: "Home", path: "/home", icon: Home },
@@ -29,28 +32,6 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-soft sticky top-0 z-50">
-      {/* Top Info Bar */}
-      <div className="bg-primary text-primary-foreground py-2 px-4">
-        <div className="container mx-auto flex justify-between items-center text-sm">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Phone className="w-4 h-4" />
-              <span>+91-90-0467-8994</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Mail className="w-4 h-4" />
-              <span>info@etour.com</span>
-            </div>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <Globe className="w-4 h-4" />
-            <select className="bg-transparent border-none text-primary-foreground">
-              <option value="en">English</option>
-              <option value="hi">हिंदी</option>
-            </select>
-          </div>
-        </div>
-      </div>
 
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4">
@@ -88,14 +69,53 @@ const Header = () => {
               })}
             </nav>
 
-            {/* Auth Buttons */}
+
             <div className="flex items-center gap-2 ml-4">
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/login">Login</Link>
-              </Button>
-              <Button variant="booking" size="sm" asChild>
-                <Link to="/signup">Sign Up</Link>
-              </Button>
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="p-2 rounded-full hover:bg-muted"
+                    >
+                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-primary-foreground" />
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-48 bg-background border shadow-lg"
+                  >
+                    <DropdownMenuItem className="flex items-center gap-2 p-3 cursor-pointer hover:bg-muted">
+                      <User className="w-4 h-4" />
+                      <div className="flex flex-col">
+                        <span className="font-medium">{user?.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {user?.email}
+                        </span>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={logout}
+                      className="flex items-center gap-2 p-3 cursor-pointer hover:bg-muted text-red-600 hover:text-red-700"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/login">Login</Link>
+                  </Button>
+                  <Button variant="booking" size="sm" asChild>
+                    <Link to="/signup">Sign Up</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
 
@@ -133,19 +153,7 @@ const Header = () => {
                 );
               })}
 
-              {/* Mobile Auth Buttons */}
-              <div className="flex gap-2 mt-4 pt-4 border-t border-border">
-                <Button variant="outline" size="sm" className="flex-1" asChild>
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                    Login
-                  </Link>
-                </Button>
-                <Button variant="booking" size="sm" className="flex-1" asChild>
-                  <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
-                    Sign Up
-                  </Link>
-                </Button>
-              </div>
+</div>
             </div>
           </nav>
         )}

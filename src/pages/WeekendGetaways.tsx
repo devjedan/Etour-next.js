@@ -1,13 +1,30 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import QuickViewModal from "@/components/ui/QuickViewModal";
 import { Calendar, Clock, IndianRupee, Star, MapPin, Car } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
 
+interface TourPackage {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  duration: string;
+  price: string;
+  originalPrice: string;
+  rating: number;
+  reviews: number;
+  highlights: string[];
+  groupSize: string;
+}
+
 const WeekendGetaways = () => {
+  const [selectedTour, setSelectedTour] = useState<TourPackage | null>(null);
   const weekendPackages = [
     {
       id: "agra-weekend",
@@ -21,7 +38,8 @@ const WeekendGetaways = () => {
       reviews: 324,
       distance: "3-4 hrs from Delhi",
       transport: "AC Car",
-      highlights: ["Taj Mahal", "Agra Fort", "Mehtab Bagh", "Local Cuisine"]
+      highlights: ["Taj Mahal", "Agra Fort", "Mehtab Bagh", "Local Cuisine"],
+      groupSize: "2-8 people"
     },
     {
       id: "rishikesh-weekend",
@@ -35,7 +53,8 @@ const WeekendGetaways = () => {
       reviews: 267,
       distance: "5-6 hrs from Delhi",
       transport: "AC Car",
-      highlights: ["River Rafting", "Laxman Jhula", "Yoga Session", "Ganga Aarti"]
+      highlights: ["River Rafting", "Laxman Jhula", "Yoga Session", "Ganga Aarti"],
+      groupSize: "2-8 people"
     },
     {
       id: "jaipur-weekend",
@@ -49,7 +68,8 @@ const WeekendGetaways = () => {
       reviews: 189,
       distance: "4-5 hrs from Delhi",
       transport: "AC Car",
-      highlights: ["Amber Fort", "City Palace", "Hawa Mahal", "Local Markets"]
+      highlights: ["Amber Fort", "City Palace", "Hawa Mahal", "Local Markets"],
+      groupSize: "2-10 people"
     },
     {
       id: "mussoorie-weekend",
@@ -63,7 +83,8 @@ const WeekendGetaways = () => {
       reviews: 156,
       distance: "6-7 hrs from Delhi",
       transport: "AC Car",
-      highlights: ["Mall Road", "Kempty Falls", "Gun Hill", "Cable Car"]
+      highlights: ["Mall Road", "Kempty Falls", "Gun Hill", "Cable Car"],
+      groupSize: "2-6 people"
     },
     {
       id: "haridwar-weekend",
@@ -77,7 +98,8 @@ const WeekendGetaways = () => {
       reviews: 234,
       distance: "4-5 hrs from Delhi",
       transport: "AC Car",
-      highlights: ["Har Ki Pauri", "Ganga Aarti", "Mansa Devi", "Chandi Devi"]
+      highlights: ["Har Ki Pauri", "Ganga Aarti", "Mansa Devi", "Chandi Devi"],
+      groupSize: "2-8 people"
     },
     {
       id: "jim-corbett-weekend",
@@ -91,7 +113,8 @@ const WeekendGetaways = () => {
       reviews: 178,
       distance: "5-6 hrs from Delhi",
       transport: "AC Car",
-      highlights: ["Jeep Safari", "Wildlife Spotting", "Nature Walk", "River Side"]
+      highlights: ["Jeep Safari", "Wildlife Spotting", "Nature Walk", "River Side"],
+      groupSize: "2-6 people"
     }
   ];
 
@@ -210,7 +233,12 @@ const WeekendGetaways = () => {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => setSelectedTour(pkg)}
+                    >
                       Quick View
                     </Button>
                     <Button 
@@ -219,7 +247,7 @@ const WeekendGetaways = () => {
                       className="flex-1"
                       asChild
                     >
-                      <Link to={`/tour/${pkg.id}`}>
+                      <Link to={`/book/${pkg.id}`}>
                         Book Now
                       </Link>
                     </Button>
@@ -267,6 +295,13 @@ const WeekendGetaways = () => {
           </div>
         </div>
       </section>
+
+      {/* Quick View Modal */}
+      <QuickViewModal 
+        isOpen={!!selectedTour} 
+        onClose={() => setSelectedTour(null)} 
+        tour={selectedTour} 
+      />
 
       <Footer />
     </div>
