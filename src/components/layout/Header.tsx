@@ -15,7 +15,6 @@ import {
   Menu,
   X,
   Search,
-  MapPin,
   Home,
   User,
   LogOut,
@@ -28,10 +27,6 @@ const Header = () => {
 
   const menuItems = [
     { name: "Home", path: "/home", icon: Home },
-    { name: "Domestic Tours", path: "/sector/domestic", icon: MapPin },
-    { name: "International Tours", path: "/sector/international", icon: Globe },
-    { name: "Sports Tourism", path: "/sector/sports", icon: null },
-    { name: "Couple Tours", path: "/sector/couple", icon: null },
     { name: "Search Tours", path: "/search", icon: Search },
   ];
 
@@ -39,7 +34,6 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-soft sticky top-0 z-50">
-      {/* Main Header */}
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -75,7 +69,7 @@ const Header = () => {
               })}
             </nav>
 
-            {/* Auth Section - User authentication UI */}
+            {/* Auth Section */}
             <div className="flex items-center gap-2 ml-4">
               {isAuthenticated ? (
                 <DropdownMenu>
@@ -159,7 +153,7 @@ const Header = () => {
                 );
               })}
 
-              {/* Mobile Auth Buttons - Responsive user authentication */}
+              {/* Mobile Auth */}
               <div className="flex gap-2 mt-4 pt-4 border-t border-border">
                 {isAuthenticated ? (
                   <div className="flex-1 space-y-2">

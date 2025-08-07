@@ -101,13 +101,11 @@ const TourPage = () => {
     },
   ];
 
-  // Dynamic cost details from backend - Replace with API call: getCostDetails(tourId)
   const costDetails = [
     { category: "Twin Sharing", price: "₹15,999", discount: "20%" },
     { category: "Single Occupancy", price: "₹22,999", discount: "15%" },
     { category: "Triple Sharing", price: "₹13,999", discount: "25%" },
-    { category: "Child with Bed", price: "₹9,999", discount: "37%" },
-    { category: "Child without Bed", price: "₹4,999", discount: "69%" },
+    { category: "Child (5-12 years)", price: "₹9,999", discount: "30%" },
   ];
 
   const departureDates = [
@@ -121,8 +119,18 @@ const TourPage = () => {
     { name: "Itinerary", icon: Route, tab: "itinerary" },
     { name: "Cost", icon: IndianRupee, tab: "cost" },
     { name: "Dates", icon: Calendar, tab: "dates" },
-    { name: "Stay & Meals", icon: Utensils, tab: "stay" },
-    { name: "Do's & Don'ts", icon: AlertTriangle, tab: "guidelines" },
+    {
+      name: "Stay & Meals",
+      icon: Utensils,
+      tab: "stay",
+      link: `/tour/${tourId}/stay-meals`,
+    },
+    {
+      name: "Do's & Don'ts",
+      icon: AlertTriangle,
+      tab: "guidelines",
+      link: `/tour/${tourId}/dos-and-donts`,
+    },
     { name: "Photos", icon: Camera, tab: "photos" },
     { name: "Terms", icon: FileText, tab: "terms" },
     { name: "Book Tour", icon: CreditCard, tab: "book", special: true },
@@ -232,6 +240,19 @@ const TourPage = () => {
                 <nav className="space-y-2">
                   {leftPanelLinks.map((link) => {
                     const Icon = link.icon;
+
+                    if (link.link) {
+                      return (
+                        <Link
+                          key={link.tab}
+                          to={link.link}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all duration-300 text-muted-foreground hover:bg-muted hover:text-foreground"
+                        >
+                          <Icon className="w-4 h-4" />
+                          {link.name}
+                        </Link>
+                      );
+                    }
 
                     return (
                       <button
@@ -363,86 +384,6 @@ const TourPage = () => {
                   </Card>
                 </TabsContent>
 
-                {/* Stay & Meals Tab */}
-                <TabsContent value="stay">
-                  <Card className="p-6">
-                    <h2 className="text-2xl font-bold mb-6">
-                      Accommodation & Meals
-                    </h2>
-                    <div className="space-y-4 text-sm text-muted-foreground">
-                      <p>
-                        Accommodations are selected for quality and comfort,
-                        with 3 or 4-star hotels as default.
-                      </p>
-                      <ul className="list-disc list-inside space-y-2">
-                        <li>
-                          <strong>Room Type:</strong> Twin sharing standard
-                          unless requested otherwise.
-                        </li>
-                        <li>
-                          <strong>Check-in/Check-out:</strong> Standard hotel
-                          timings apply (12 PM check-in, 11 AM check-out).
-                        </li>
-                        <li>
-                          <strong>Upgrades:</strong> Room upgrades available on
-                          request at extra cost.
-                        </li>
-                      </ul>
-                      <p className="font-medium mt-6">Meals Provided:</p>
-                      <ul className="list-disc list-inside space-y-2">
-                        <li>
-                          <strong>Breakfast:</strong> Included daily at the
-                          hotel.
-                        </li>
-                        <li>
-                          <strong>Lunch/Dinner:</strong> Not included unless
-                          stated. Available at local restaurants or optional
-                          meal plans.
-                        </li>
-                        <li>
-                          <strong>Special Requirements:</strong> Inform us about
-                          dietary needs in advance (veg, vegan, allergies).
-                        </li>
-                      </ul>
-                    </div>
-                  </Card>
-                </TabsContent>
-
-                {/* Do's & Don'ts Tab */}
-                <TabsContent value="guidelines">
-                  <Card className="p-6">
-                    <h2 className="text-2xl font-bold mb-6">Do’s & Don’ts</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground">
-                      <div>
-                        <h3 className="font-semibold mb-2 text-green-600">
-                          ✔ Do’s
-                        </h3>
-                        <ul className="list-disc list-inside space-y-2">
-                          <li>Carry valid ID at all times.</li>
-                          <li>Respect local culture and laws.</li>
-                          <li>Follow guide and group instructions.</li>
-                          <li>Stay hydrated and take care of your health.</li>
-                          <li>Use reusable bottles and bags.</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-2 text-red-600">
-                          ✘ Don’ts
-                        </h3>
-                        <ul className="list-disc list-inside space-y-2">
-                          <li>Don’t litter or damage natural surroundings.</li>
-                          <li>Don’t ignore safety instructions.</li>
-                          <li>Don’t consume prohibited substances.</li>
-                          <li>Don’t disrespect religious places or customs.</li>
-                          <li>
-                            Don’t wander alone in unfamiliar places at night.
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </Card>
-                </TabsContent>
-
                 {/* Other tabs content would go here... */}
                 <TabsContent value="book">
                   <Card className="p-6 text-center">
@@ -460,99 +401,21 @@ const TourPage = () => {
                   </Card>
                 </TabsContent>
 
-                {/* Photos Tab */}
-                <TabsContent value="photos">
-                  <Card className="p-6">
-                    <h2 className="text-2xl font-bold mb-6">Tour Photos</h2>
-                    <p className="text-muted-foreground mb-4">
-                      Browse through memorable moments from the tour.
-                    </p>
-                    {/* You can replace the below grid with actual images in production */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {/* Example placeholders */}
-                      <div className="h-40 bg-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground">
-                        Photo 1
-                      </div>
-                      <div className="h-40 bg-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground">
-                        Photo 2
-                      </div>
-                      <div className="h-40 bg-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground">
-                        Photo 3
-                      </div>
-                      <div className="h-40 bg-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground">
-                        Photo 4
-                      </div>
-                    </div>
-                  </Card>
-                </TabsContent>
-
-                {/* Terms Tab */}
-                <TabsContent value="terms">
-                  <Card className="p-6">
-                    <h2 className="text-2xl font-bold mb-6">
-                      Terms & Conditions
-                    </h2>
-                    <div className="space-y-4 text-sm text-muted-foreground">
-                      <p>
-                        By booking this tour, you agree to the following terms
-                        and conditions:
+                {/* Remaining tabs */}
+                {["photos", "terms"].map((tab) => (
+                  <TabsContent key={tab} value={tab}>
+                    <Card className="p-6">
+                      <h2 className="text-2xl font-bold mb-6 capitalize">
+                        {tab.replace(/([A-Z])/g, " $1").trim()}
+                      </h2>
+                      <p className="text-muted-foreground">
+                        Content for {tab} will be displayed here. This section
+                        will contain detailed information about the tour's {tab}
+                        .
                       </p>
-                      <ul className="list-disc list-inside space-y-2">
-                        <li>
-                          <strong>Booking & Payment:</strong> A non-refundable
-                          advance payment is required at the time of booking.
-                          Full payment must be completed at least 7 days before
-                          departure.
-                        </li>
-                        <li>
-                          <strong>Cancellation Policy:</strong> Cancellations
-                          made 15 days prior to the tour date are eligible for a
-                          50% refund. No refund for cancellations within 7 days
-                          of departure.
-                        </li>
-                        <li>
-                          <strong>Travel Insurance:</strong> Travel insurance is
-                          not included. We recommend all travelers purchase
-                          appropriate coverage for health, trip cancellation,
-                          and belongings.
-                        </li>
-                        <li>
-                          <strong>Itinerary Changes:</strong> The itinerary is
-                          subject to change due to unforeseen circumstances like
-                          weather or road conditions. The tour operator will
-                          ensure minimal disruption.
-                        </li>
-                        <li>
-                          <strong>Health & Safety:</strong> Participants must
-                          disclose any medical conditions in advance. The tour
-                          operator is not liable for any health issues arising
-                          during the tour.
-                        </li>
-                        <li>
-                          <strong>Liability:</strong> We are not liable for any
-                          loss, injury, or damage sustained during the tour due
-                          to acts of nature, theft, or negligence by third
-                          parties.
-                        </li>
-                        <li>
-                          <strong>Responsibility:</strong> Travelers must adhere
-                          to local laws, cultural guidelines, and tour leader
-                          instructions at all times.
-                        </li>
-                        <li>
-                          <strong>Force Majeure:</strong> In case of natural
-                          disasters, political unrest, or any event beyond
-                          control, the tour may be rescheduled or canceled with
-                          limited liability.
-                        </li>
-                      </ul>
-                      <p className="text-xs italic text-muted-foreground">
-                        These terms apply to all tours organized by our company
-                        unless explicitly stated otherwise in writing.
-                      </p>
-                    </div>
-                  </Card>
-                </TabsContent>
+                    </Card>
+                  </TabsContent>
+                ))}
               </Tabs>
             </div>
           </div>

@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import heroBanner from "@/assets/hero-banner.jpg";
 
 interface TourPackage {
-  package_id: number;
-  package_name: string;
-  package_info: string;
-  package_image_path: string;
-  duration_days: number;
-  start_date: string;
-  end_date: string;
-  ctg_master_id: number;
+  id: number;
+  name: string;
+  info: string;
+  image: string;
+  duration: number;
+  start: string;
+  end: string;
+  category: number;
 }
 
 const ProductPage = () => {
@@ -34,7 +34,18 @@ const ProductPage = () => {
     fetch(`http://localhost:8088/api/categories/${subSectorId}/`)
       .then((res) => res.json())
       .then((data) => {
-        setPackages(data);
+        console.log("Fetched package data:", data); // ✅ DEBUG LOG
+        const mapped = data.map((pkg: any) => ({
+          id: pkg.packageId,
+          name: pkg.packageName,
+          info: pkg.packageInfo,
+          image: pkg.packageImagePath,
+          duration: pkg.durationDays,
+          start: pkg.startDate,
+          end: pkg.endDate,
+          category: pkg.ctgMasterId,
+        }));
+        setPackages(mapped);
         setLoading(false);
       })
       .catch((err) => {
@@ -88,46 +99,41 @@ const ProductPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {packages.map((pkg) => (
-                <Card
-                  key={pkg.package_id}
-                  className="overflow-hidden group hover-lift"
-                >
-                  <Link to={`/packages/${pkg.package_id}`}>
+                <Card key={pkg.id} className="overflow-hidden group hover-lift">
+                  <Link to={`/packages/${pkg.id}`}>
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={
-                          pkg.package_image_path
-                            ? `http://localhost:8088${pkg.package_image_path}`
+                          pkg.image
+                            ? `http://localhost:8080${pkg.image}`
                             : heroBanner
                         }
-                        alt={pkg.package_name}
+                        alt={pkg.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
                     </div>
 
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold mb-2">
-                        {pkg.package_name}
-                      </h3>
+                      <h3 className="text-xl font-semibold mb-2">{pkg.name}</h3>
                       <p className="text-muted-foreground mb-4 text-sm line-clamp-3">
-                        {pkg.package_info}
+                        {pkg.info}
                       </p>
 
                       <div className="grid grid-cols-1 gap-2 text-sm mb-4 text-muted-foreground">
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4" />
-                          <span>{pkg.duration_days} Days</span>
+                          <span>{pkg.duration} Days</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4" />
                           <span>
-                            {pkg.start_date} to {pkg.end_date}
+                            {pkg.start} to {pkg.end}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MapPin className="w-4 h-4" />
-                          <span>Category #{pkg.ctg_master_id}</span>
+                          <span>Category #{pkg.category}</span>
                         </div>
                       </div>
 

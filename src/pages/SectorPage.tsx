@@ -37,23 +37,42 @@ const SectorPage = () => {
 
   useEffect(() => {
     if (!sectorId) return;
+
     setLoading(true);
 
-    // 1. Try to fetch subcategories
+    // Step 1: Try fetching subcategories
     fetch(`http://localhost:8088/api/categories/${sectorId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.length > 0) {
           setSubSectors(data);
-          setPackages([]); // clear package list
+          setPackages([]); // clear previous packages
           setLoading(false);
         } else {
-          // 2. If no subcategories, try to fetch packages
+          // Step 2: If no subcategories, fetch packages
           fetch(`http://localhost:8088/api/categories/${sectorId}/`)
             .then((res) => res.json())
             .then((packageData) => {
+              // 🔁 Map the raw backend package data to match TourPackage interface
+              const mappedPackages = packageData.map((pkg: any) => ({
+                id: pkg.packageId?.toString(),
+                name: pkg.packageName,
+                description: pkg.packageInfo,
+                image: pkg.packageImagePath,
+                duration: `${pkg.durationDays} days`,
+                price: "Coming Soon", // replace if price is available
+                originalPrice: "Coming Soon", // replace if needed
+                rating: 4.5, // optional mock value
+                reviews: 100, // optional mock value
+                highlights: [], // optional
+                difficulty: "Easy", // optional
+                groupSize: "15", // optional
+              }));
+
+              console.log("Mapped packages:", mappedPackages); // ✅ Debug output
+
               setSubSectors([]);
-              setPackages(packageData);
+              setPackages(mappedPackages);
               setLoading(false);
             })
             .catch((err) => {
