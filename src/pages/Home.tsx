@@ -48,6 +48,7 @@ const Home = () => {
         return response.json();
       })
       .then((data) => {
+        console.log("Fetched categories:", data);
         setTourSectors(data);
       })
       .catch((error) => {

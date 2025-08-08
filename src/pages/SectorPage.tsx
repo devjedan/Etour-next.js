@@ -152,7 +152,7 @@ const SectorPage = () => {
                   key={pkg.id}
                   className="overflow-hidden hover-lift cursor-pointer group"
                 >
-                  <Link to={`/packages/${pkg.id}`}>
+                  <Link to={`/tour/${pkg.id}`}>
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={`http://localhost:8088${pkg.image}`}

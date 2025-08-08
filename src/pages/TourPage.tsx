@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -26,10 +26,53 @@ import {
   Route,
 } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
+import { set } from "date-fns";
+
+interface Category {
+  ctgMasterId: number;
+  ctgId: string;
+  ctgName: string;
+  subCtgName: string;
+  ctgImgPath: string;
+  flag: boolean;
+}
+
+interface TourPackage {
+  packageId: number;
+  packageName: string;
+  packageInfo: string;
+  packageImagePath: string;
+  durationDays: number;
+  startDate: string;
+  endDate: string;
+  category: Category;
+}
 
 const TourPage = () => {
-  const { tourId } = useParams();
+  const { tourId } = useParams<{ tourId: string }>();
+
   const [activeTab, setActiveTab] = useState("itinerary");
+  const [tourData, setTourData] = useState<TourPackage | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!tourId) return;
+
+    setLoading(true);
+
+    // Step 1: Try fetching subcategories
+    fetch(`http://localhost:8088/api/packages/${tourId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data: ", data);
+        setTourData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching packages:", error);
+        setLoading(false);
+      });
+  }, [tourId]);
 
   // Mock tour data
   const tour = {
@@ -152,7 +195,7 @@ const TourPage = () => {
               Domestic Tours
             </Link>
             <span className="mx-2">&gt;</span>
-            <span>{tour.name}</span>
+            <span>{tourData?.packageName}</span>
           </nav>
         </div>
       </section>
@@ -165,12 +208,12 @@ const TourPage = () => {
             <div className="lg:col-span-2">
               <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
                 <img
-                  src={tour.image}
-                  alt={tour.name}
+                  src={tourData?.packageImagePath}
+                  alt={tourData?.packageName}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute top-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
-                  {tour.category}
+                  {tourData?.category?.ctgName}
                 </div>
               </div>
             </div>
@@ -178,27 +221,34 @@ const TourPage = () => {
             {/* Tour Info */}
             <div>
               <div className="bg-card p-6 rounded-lg shadow-soft">
-                <h1 className="text-2xl font-bold mb-2">{tour.name}</h1>
-                <p className="text-muted-foreground mb-4">{tour.description}</p>
+                <h1 className="text-2xl font-bold mb-2">
+                  {tourData?.packageName}
+                </h1>
+                <p className="text-muted-foreground mb-4">
+                  {tourData?.packageInfo}
+                </p>
 
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm">{tour.duration}</span>
+                    <span className="text-sm">
+                      {tourData?.durationDays} Days /{" "}
+                      {tourData?.durationDays - 1} Nights
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm">{tour.groupSize}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
+                  </div> */}
+                  {/* <div className="flex items-center gap-2">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                     <span className="text-sm">
                       {tour.rating} ({tour.reviews} reviews)
                     </span>
-                  </div>
+                  </div> */}
                 </div>
 
-                <div className="border-t pt-4">
+                {/* <div className="border-t pt-4">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl font-bold text-primary">
                       {tour.price}
@@ -210,15 +260,15 @@ const TourPage = () => {
                   <span className="text-xs text-muted-foreground">
                     per person (twin sharing)
                   </span>
-                </div>
+                </div> */}
 
                 <Button
                   variant="booking"
                   size="lg"
-                  className="w-full mt-6"
+                  className="w-full mt-2"
                   asChild
                 >
-                  <Link to={`/book/${tour.id}`}>
+                  <Link to={`/book/${tourData?.packageId}`}>
                     <CreditCard className="w-4 h-4" />
                     Book Now
                   </Link>

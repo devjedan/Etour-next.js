@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -40,9 +40,33 @@ interface Passenger {
   roomSharing: string; // single, twin, triple, childWithBed, childWithoutBed
 }
 
+interface Category {
+  ctgMasterId: number;
+  ctgId: string;
+  ctgName: string;
+  subCtgName: string;
+  ctgImgPath: string;
+  flag: boolean;
+}
+
+interface TourPackage {
+  packageId: number;
+  packageName: string;
+  packageInfo: string;
+  packageImagePath: string;
+  durationDays: number;
+  startDate: string;
+  endDate: string;
+  category: Category;
+}
+
 const BookTourPage = () => {
-  const { tourId } = useParams();
+  const { tourId } = useParams<{ tourId: string }>();
+
   const { toast } = useToast();
+
+  const [tourData, setTourData] = useState<TourPackage | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [step, setStep] = useState(1); // 1: Details, 2: Passengers, 3: Payment, 4: Confirmation
   const [primaryPassenger, setPrimaryPassenger] = useState({
@@ -205,6 +229,25 @@ const BookTourPage = () => {
     });
   };
 
+  useEffect(() => {
+    if (!tourId) return;
+
+    setLoading(true);
+
+    // Step 1: Try fetching subcategories
+    fetch(`http://localhost:8088/api/packages/${tourId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data: ", data);
+        setTourData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching packages:", error);
+        setLoading(false);
+      });
+  }, [tourId]);
+
   if (step === 4) {
     return (
       <div className="min-h-screen bg-background">
@@ -229,7 +272,7 @@ const BookTourPage = () => {
                   <strong>Order Number:</strong> {orderNumber}
                 </p>
                 <p>
-                  <strong>Tour:</strong> {tour.name}
+                  <strong>Tour:</strong> {tourData.packageName}
                 </p>
                 <p>
                   <strong>Date:</strong> {selectedDate}
@@ -330,15 +373,20 @@ const BookTourPage = () => {
                   <div className="space-y-4">
                     <div>
                       <Label>Tour Code</Label>
-                      <Input value={tour.code} disabled />
+                      <Input value={tourData?.packageId} disabled />
                     </div>
                     <div>
                       <Label>Tour Name</Label>
-                      <Input value={tour.name} disabled />
+                      <Input value={tourData?.packageName} disabled />
                     </div>
                     <div>
                       <Label>Duration</Label>
-                      <Input value={tour.duration} disabled />
+                      <Input
+                        value={`${tourData?.durationDays} Days / ${
+                          tourData?.durationDays - 1
+                        } Nights`}
+                        disabled
+                      />
                     </div>
                     <div>
                       <Label htmlFor="departureDate">
@@ -413,6 +461,7 @@ const BookTourPage = () => {
                       <Label htmlFor="name">Full Name *</Label>
                       <Input
                         id="name"
+                        className="cursor-pointer"
                         value={primaryPassenger.name}
                         onChange={(e) =>
                           setPrimaryPassenger({
@@ -752,7 +801,9 @@ const BookTourPage = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span>Tour:</span>
-                      <span className="font-semibold">{tour.name}</span>
+                      <span className="font-semibold">
+                        {tourData.packageName}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Date:</span>
